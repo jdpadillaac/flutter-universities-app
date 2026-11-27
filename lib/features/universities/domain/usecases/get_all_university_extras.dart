@@ -3,10 +3,10 @@ import 'package:universities_app/features/universities/domain/entities/universit
 import 'package:universities_app/features/universities/domain/repositories/university_extras_repository.dart';
 
 @injectable
-class WatchUniversityExtras {
-  const WatchUniversityExtras(this._repository);
+class GetAllUniversityExtras {
+  const GetAllUniversityExtras(this._repository);
 
   final UniversityExtrasRepository _repository;
 
-  Stream<Map<String, UniversityExtras>> call() => _repository.watch();
+  Map<String, UniversityExtras> call() => _repository.all;
 }

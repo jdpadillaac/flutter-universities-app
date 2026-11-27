@@ -39,6 +39,8 @@ import 'package:universities_app/features/universities/domain/repositories/unive
     as _i814;
 import 'package:universities_app/features/universities/domain/services/university_id_generator.dart'
     as _i129;
+import 'package:universities_app/features/universities/domain/usecases/get_all_university_extras.dart'
+    as _i822;
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart'
     as _i729;
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart'
@@ -51,8 +53,6 @@ import 'package:universities_app/features/universities/domain/usecases/save_univ
     as _i576;
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart'
     as _i267;
-import 'package:universities_app/features/universities/domain/usecases/watch_university_extras.dart'
-    as _i847;
 import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart'
     as _i713;
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/layout_cubit.dart'
@@ -105,6 +105,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i886.PickUniversityImage>(
       () => _i886.PickUniversityImage(gh<_i202.ImagePickerRepository>()),
     );
+    gh.factory<_i822.GetAllUniversityExtras>(
+      () =>
+          _i822.GetAllUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
+    );
     gh.factory<_i31.GetUniversityExtras>(
       () => _i31.GetUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
     );
@@ -116,14 +120,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i814.UniversityExtrasRepository>(),
       ),
     );
-    gh.factory<_i847.WatchUniversityExtras>(
-      () => _i847.WatchUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
-    );
     gh.lazySingleton<_i127.UniversitiesJsonParser>(
       () => _i127.UniversitiesJsonParser(gh<_i297.UniversityDtoMapper>()),
     );
     gh.factory<_i737.UniversityThumbnailsBloc>(
-      () => _i737.UniversityThumbnailsBloc(gh<_i847.WatchUniversityExtras>()),
+      () => _i737.UniversityThumbnailsBloc(gh<_i822.GetAllUniversityExtras>()),
     );
     gh.factory<_i379.UniversitiesRemoteDataSource>(
       () => _i379.UniversitiesRemoteDataSourceImpl(

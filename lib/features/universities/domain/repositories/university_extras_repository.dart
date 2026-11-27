@@ -12,6 +12,4 @@ abstract interface class UniversityExtrasRepository {
     required String universityId,
     required StudentCount studentCount,
   });
-
-  Stream<Map<String, UniversityExtras>> watch();
 }

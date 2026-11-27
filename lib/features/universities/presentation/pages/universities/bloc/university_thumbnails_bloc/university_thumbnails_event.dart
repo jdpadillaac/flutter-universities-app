@@ -7,7 +7,6 @@ sealed class UniversityThumbnailsEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-final class UniversityThumbnailsSubscriptionRequested
-    extends UniversityThumbnailsEvent {
-  const UniversityThumbnailsSubscriptionRequested();
+final class UniversityThumbnailsRequested extends UniversityThumbnailsEvent {
+  const UniversityThumbnailsRequested();
 }

@@ -14,6 +14,8 @@ import 'package:universities_app/features/universities/presentation/pages/univer
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/list_layout.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_bloc.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_event.dart';
+import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_bloc.dart';
+import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_event.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/load_more_indicator.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/university_grid_card.dart';
@@ -70,7 +72,17 @@ class UniversitiesScrollViewState extends State<UniversitiesScrollView> {
   }
 
   void _openDetail(University university) {
-    unawaited(context.push(AppRoutes.universityDetailPath(university.id)));
+    unawaited(_navigateToDetail(university));
+  }
+
+  Future<void> _navigateToDetail(University university) async {
+    await context.push(AppRoutes.universityDetailPath(university.id));
+    if (!mounted) {
+      return;
+    }
+    context.read<UniversityThumbnailsBloc>().add(
+      const UniversityThumbnailsRequested(),
+    );
   }
 
   @override

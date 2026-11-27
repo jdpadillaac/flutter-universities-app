@@ -31,7 +31,7 @@ class UniversitiesPage extends StatelessWidget {
         BlocProvider(
           create: (_) =>
               getIt<UniversityThumbnailsBloc>()
-                ..add(const UniversityThumbnailsSubscriptionRequested()),
+                ..add(const UniversityThumbnailsRequested()),
         ),
       ],
       child: UniversitiesView(

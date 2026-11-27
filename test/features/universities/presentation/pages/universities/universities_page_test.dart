@@ -8,7 +8,7 @@ import 'package:universities_app/features/universities/domain/entities/universit
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/services/university_id_generator.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart';
-import 'package:universities_app/features/universities/domain/usecases/watch_university_extras.dart';
+import 'package:universities_app/features/universities/domain/usecases/get_all_university_extras.dart';
 import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/layout_cubit.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_bloc.dart';
@@ -23,7 +23,8 @@ import '../../../../../support/localized_material_app.dart';
 
 class MockGetUniversitiesPage extends Mock implements GetUniversitiesPage {}
 
-class MockWatchUniversityExtras extends Mock implements WatchUniversityExtras {}
+class MockGetAllUniversityExtras extends Mock
+    implements GetAllUniversityExtras {}
 
 class PageUniversityCatalog {
   const PageUniversityCatalog(this._ids);
@@ -70,19 +71,19 @@ Widget buildListHarness({
 
 void main() {
   late MockGetUniversitiesPage getUniversitiesPage;
-  late MockWatchUniversityExtras watchUniversityExtras;
+  late MockGetAllUniversityExtras getAllUniversityExtras;
   const catalog = PageUniversityCatalog(UniversityIdGenerator());
 
   setUpAll(registerFallbackValues);
 
   setUp(() {
     getUniversitiesPage = MockGetUniversitiesPage();
-    watchUniversityExtras = MockWatchUniversityExtras();
-    when(watchUniversityExtras.call).thenAnswer((_) => const Stream.empty());
+    getAllUniversityExtras = MockGetAllUniversityExtras();
+    when(getAllUniversityExtras.call).thenReturn(const {});
   });
 
   UniversityThumbnailsBloc buildThumbnailsBloc() =>
-      UniversityThumbnailsBloc(watchUniversityExtras);
+      UniversityThumbnailsBloc(getAllUniversityExtras);
 
   testWidgets('shows empty state when loaded list is empty', (tester) async {
     final bloc = UniversitiesBloc(getUniversitiesPage)
