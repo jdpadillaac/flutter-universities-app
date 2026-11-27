@@ -7,7 +7,7 @@ alwaysApply: true
 
 El contenedor es GetIt, generado por injectable.
 
-- `RegisterModule` registra `Dio` y `GoRouter`. El router se construye en el getter; no hay función `createAppRouter`.
+- `RegisterModule` registra `Dio`, `GoRouter` e `ImagePicker`. El router se construye en el getter; no hay función `createAppRouter`.
 - `ApiClient`, `HtmlEntityDecoder`, `UniversityIdGenerator`, `UniversityDtoMapper` y `UniversitiesJsonParser` son `@lazySingleton`.
 - `configureDependencies` se queda como función top-level: `@InjectableInit` en injectable 3.0.0 solo admite `TargetKind.function`.
 - Después de cambiar anotaciones, corre `fvm dart run build_runner build --delete-conflicting-outputs`.

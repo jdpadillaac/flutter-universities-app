@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universities_app/core/error/failure.dart';
-import 'package:universities_app/features/universities/domain/entities/universities_page.dart';
+import 'package:universities_app/features/universities/domain/entities/universities_slice_entity.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/services/university_id_generator.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart';
@@ -51,8 +51,8 @@ void main() {
     build: buildBloc,
     setUp: () {
       when(() => getUniversitiesPage(page: 0)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: catalog.take(2), hasReachedMax: false),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: catalog.take(2), hasReachedMax: false),
         ),
       );
     },
@@ -68,7 +68,7 @@ void main() {
     build: buildBloc,
     setUp: () {
       when(() => getUniversitiesPage(page: 0)).thenAnswer(
-        (_) async => const Err<UniversitiesPage, Failure>(
+        (_) async => const Err<UniversitiesSliceEntity, Failure>(
           NetworkFailure(message: 'down', statusCode: 503),
         ),
       );
@@ -89,13 +89,13 @@ void main() {
     build: buildBloc,
     setUp: () {
       when(() => getUniversitiesPage(page: 0)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: catalog.take(1), hasReachedMax: false),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: catalog.take(1), hasReachedMax: false),
         ),
       );
       when(() => getUniversitiesPage(page: 1)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: [catalog.at(1)], hasReachedMax: true),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: [catalog.at(1)], hasReachedMax: true),
         ),
       );
     },
@@ -121,12 +121,12 @@ void main() {
     build: buildBloc,
     setUp: () {
       when(() => getUniversitiesPage(page: 0)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: catalog.take(1), hasReachedMax: false),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: catalog.take(1), hasReachedMax: false),
         ),
       );
       when(() => getUniversitiesPage(page: 1)).thenAnswer(
-        (_) async => const Err<UniversitiesPage, Failure>(
+        (_) async => const Err<UniversitiesSliceEntity, Failure>(
           NetworkFailure(message: 'append failed'),
         ),
       );
@@ -180,8 +180,8 @@ void main() {
     build: buildBloc,
     setUp: () {
       when(() => getUniversitiesPage(page: 0)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: catalog.take(1), hasReachedMax: true),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: catalog.take(1), hasReachedMax: true),
         ),
       );
     },
@@ -202,12 +202,12 @@ void main() {
     build: buildBloc,
     setUp: () {
       when(() => getUniversitiesPage(page: 0)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: catalog.take(1), hasReachedMax: false),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: catalog.take(1), hasReachedMax: false),
         ),
       );
       when(() => getUniversitiesPage(page: 1)).thenAnswer(
-        (_) async => const Err<UniversitiesPage, Failure>(
+        (_) async => const Err<UniversitiesSliceEntity, Failure>(
           NetworkFailure(message: 'append failed'),
         ),
       );
@@ -218,8 +218,8 @@ void main() {
       bloc.add(const UniversitiesNextPageRequested());
       await Future<void>.delayed(Duration.zero);
       when(() => getUniversitiesPage(page: 1)).thenAnswer(
-        (_) async => Ok<UniversitiesPage, Failure>(
-          UniversitiesPage(items: [catalog.at(1)], hasReachedMax: true),
+        (_) async => Ok<UniversitiesSliceEntity, Failure>(
+          UniversitiesSliceEntity(items: [catalog.at(1)], hasReachedMax: true),
         ),
       );
       bloc.add(const UniversitiesRetryRequested());

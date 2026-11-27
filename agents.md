@@ -1,6 +1,6 @@
 # Universities
 
-App Flutter de universidades con Clean Architecture por feature. El JSON vive en S3. La presentación es un placeholder de lista y detalle. Plataformas: Android e iOS.
+App Flutter de universidades con Clean Architecture por feature. El JSON vive en S3. `UniversitiesPage` lista con scroll infinito; `UniversityDetailPage` muestra detalle, imagen y conteo de estudiantes. Plataformas: Android e iOS.
 
 ## Arranque
 

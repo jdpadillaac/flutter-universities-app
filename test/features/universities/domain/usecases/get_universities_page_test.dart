@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universities_app/core/error/failure.dart';
-import 'package:universities_app/features/universities/domain/entities/universities_page.dart';
+import 'package:universities_app/features/universities/domain/entities/universities_slice_entity.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/repositories/universities_repository.dart';
 import 'package:universities_app/features/universities/domain/services/university_id_generator.dart';
@@ -52,7 +52,7 @@ void main() {
 
     expect(
       result.unwrap(),
-      UniversitiesPage(items: universities, hasReachedMax: true),
+      UniversitiesSliceEntity(items: universities, hasReachedMax: true),
     );
   });
 
@@ -66,7 +66,10 @@ void main() {
 
     expect(
       result.unwrap(),
-      UniversitiesPage(items: universities.sublist(4), hasReachedMax: true),
+      UniversitiesSliceEntity(
+        items: universities.sublist(4),
+        hasReachedMax: true,
+      ),
     );
   });
 
@@ -80,7 +83,10 @@ void main() {
 
     expect(
       result.unwrap(),
-      UniversitiesPage(items: universities.sublist(0, 2), hasReachedMax: false),
+      UniversitiesSliceEntity(
+        items: universities.sublist(0, 2),
+        hasReachedMax: false,
+      ),
     );
   });
 
@@ -94,7 +100,7 @@ void main() {
 
     expect(
       result.unwrap(),
-      const UniversitiesPage(items: [], hasReachedMax: true),
+      const UniversitiesSliceEntity(items: [], hasReachedMax: true),
     );
   });
 
