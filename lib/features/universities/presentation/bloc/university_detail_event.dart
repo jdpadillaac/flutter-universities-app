@@ -11,7 +11,7 @@ sealed class UniversityDetailEvent extends Equatable {
 final class UniversityDetailRequested extends UniversityDetailEvent {
   const UniversityDetailRequested(this.universityId);
 
-  final String universityId;
+  final String? universityId;
 
   @override
   List<Object?> get props => [universityId];

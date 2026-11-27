@@ -214,6 +214,12 @@ abstract class AppLocalizations {
   /// **'No se encontró la universidad.'**
   String get universityNotFound;
 
+  /// No description provided for @backToList.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a la lista'**
+  String get backToList;
+
   /// No description provided for @savedSuccess.
   ///
   /// In es, this message translates to:

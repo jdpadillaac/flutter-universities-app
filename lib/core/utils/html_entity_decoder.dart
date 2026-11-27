@@ -18,7 +18,11 @@ class HtmlEntityDecoder {
 
   String decode(String input) {
     return input.replaceAllMapped(_entityPattern, (match) {
-      final token = match.group(1)!;
+      final token = match.group(1);
+      final fallback = match.group(0) ?? '';
+      if (token == null) {
+        return fallback;
+      }
       if (token.startsWith('#x')) {
         final codePoint = int.parse(token.substring(2), radix: 16);
         return String.fromCharCode(codePoint);
@@ -27,7 +31,7 @@ class HtmlEntityDecoder {
         final codePoint = int.parse(token.substring(1));
         return String.fromCharCode(codePoint);
       }
-      return _namedEntities[token] ?? match.group(0)!;
+      return _namedEntities[token] ?? fallback;
     });
   }
 }

@@ -20,6 +20,7 @@
   "retry": "Reintentar",
   "emptyUniversities": "No hay universidades disponibles.",
   "universityNotFound": "No se encontró la universidad.",
+  "backToList": "Volver a la lista",
   "savedSuccess": "Guardado correctamente.",
   "permissionDenied": "Se denegó el permiso para usar la cámara o la galería.",
   "imagePickFailed": "No se pudo seleccionar la imagen.",

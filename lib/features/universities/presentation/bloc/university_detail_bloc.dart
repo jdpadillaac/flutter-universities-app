@@ -42,11 +42,19 @@ class UniversityDetailBloc
     _universityId = event.universityId;
     emit(const UniversityDetailState());
 
-    final result = await _getUniversityById(event.universityId);
+    final universityId = event.universityId;
+    if (universityId == null) {
+      emit(
+        const UniversityDetailState(status: UniversityDetailStatus.notFound),
+      );
+      return;
+    }
+
+    final result = await _getUniversityById(universityId);
 
     switch (result) {
       case Ok(value: final university):
-        final extras = _getUniversityExtras(event.universityId);
+        final extras = _getUniversityExtras(universityId);
         final studentsInput = extras.studentCount?.value.toString() ?? '';
         final validation = StudentCount.parse(studentsInput);
 
@@ -56,7 +64,7 @@ class UniversityDetailBloc
             university: university,
             imagePath: extras.imagePath,
             studentsInput: studentsInput,
-            validationError: validation.isErr() ? validation.unwrapErr() : null,
+            validationError: _validationError(validation),
           ),
         );
       case Err():
@@ -75,10 +83,19 @@ class UniversityDetailBloc
       state.copyWith(
         studentsInput: event.value,
         studentsTouched: true,
-        validationError: validation.isErr() ? validation.unwrapErr() : null,
+        validationError: _validationError(validation),
         clearValidationError: validation.isOk(),
       ),
     );
+  }
+
+  StudentCountError? _validationError(
+    Result<StudentCount, StudentCountError> validation,
+  ) {
+    return switch (validation) {
+      Ok() => null,
+      Err(:final error) => error,
+    };
   }
 
   Future<void> _onImagePickRequested(

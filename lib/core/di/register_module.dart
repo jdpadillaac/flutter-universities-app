@@ -33,7 +33,7 @@ abstract class RegisterModule {
             path: 'universities/:id',
             name: AppRoutes.universityDetail,
             builder: (context, state) {
-              final id = state.pathParameters['id']!;
+              final id = state.pathParameters['id'];
               return UniversityDetailPage(universityId: id);
             },
           ),

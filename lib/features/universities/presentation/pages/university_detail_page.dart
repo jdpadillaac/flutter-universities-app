@@ -6,12 +6,13 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_detail_app_bar.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_detail_content.dart';
+import 'package:universities_app/features/universities/presentation/widgets/university_not_found_view.dart';
 import 'package:universities_app/l10n/generated/app_localizations.dart';
 
 class UniversityDetailPage extends StatelessWidget {
   const UniversityDetailPage({required this.universityId, super.key});
 
-  final String universityId;
+  final String? universityId;
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +58,14 @@ class UniversityDetailView extends StatelessWidget {
               UniversityDetailStatus.loading => const Center(
                 child: CircularProgressIndicator(),
               ),
-              UniversityDetailStatus.notFound => Center(
-                child: Text(
-                  l10n.universityNotFound,
-                  textAlign: TextAlign.center,
+              UniversityDetailStatus.notFound => const UniversityNotFoundView(),
+              UniversityDetailStatus.ready => switch (state.university) {
+                final university? => UniversityDetailContent(
+                  university: university,
+                  state: state,
                 ),
-              ),
-              UniversityDetailStatus.ready when state.university != null =>
-                UniversityDetailContent(state: state),
-              UniversityDetailStatus.ready => const SizedBox.shrink(),
+                null => const SizedBox.shrink(),
+              },
             };
           },
         ),

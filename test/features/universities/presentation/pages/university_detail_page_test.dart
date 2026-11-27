@@ -123,6 +123,19 @@ void main() {
     expect(button.onPressed, isNull);
   });
 
+  testWidgets('shows back to list when university is not found', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      buildHarness(
+        const UniversityDetailState(status: UniversityDetailStatus.notFound),
+      ),
+    );
+
+    expect(find.text('No se encontró la universidad.'), findsOneWidget);
+    expect(find.text('Volver a la lista'), findsOneWidget);
+  });
+
   testWidgets('enables save with valid student count', (tester) async {
     await tester.pumpWidget(
       buildHarness(

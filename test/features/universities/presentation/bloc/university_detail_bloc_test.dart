@@ -89,6 +89,19 @@ void main() {
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
+    'emits notFound when the route id is missing',
+    build: buildBloc,
+    act: (bloc) => bloc.add(const UniversityDetailRequested(null)),
+    verify: (_) {
+      verifyNever(() => getUniversityById(any()));
+    },
+    expect: () => [
+      const UniversityDetailState(),
+      const UniversityDetailState(status: UniversityDetailStatus.notFound),
+    ],
+  );
+
+  blocTest<UniversityDetailBloc, UniversityDetailState>(
     'emits notFound when the university is missing',
     build: buildBloc,
     act: (bloc) => bloc.add(const UniversityDetailRequested('missing')),

@@ -69,6 +69,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get universityNotFound => 'No se encontró la universidad.';
 
   @override
+  String get backToList => 'Volver a la lista';
+
+  @override
   String get savedSuccess => 'Guardado correctamente.';
 
   @override
