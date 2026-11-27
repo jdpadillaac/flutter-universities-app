@@ -17,8 +17,8 @@ class GetUniversitiesPage {
     required int page,
     int pageSize = 20,
   }) async {
-    if (page < 1) {
-      return const Err(UnexpectedFailure(message: 'page must be >= 1'));
+    if (page < 0) {
+      return const Err(UnexpectedFailure(message: 'page must be >= 0'));
     }
     if (pageSize <= 0) {
       return const Err(UnexpectedFailure(message: 'pageSize must be > 0'));
@@ -34,12 +34,12 @@ class GetUniversitiesPage {
     int pageSize,
   ) {
     final total = universities.length;
-    final start = (page - 1) * pageSize;
+    final start = page * pageSize;
     if (start >= total) {
       return const UniversitiesPage(items: [], hasReachedMax: true);
     }
 
-    final end = min(page * pageSize, total);
+    final end = min(start + pageSize, total);
     return UniversitiesPage(
       items: universities.sublist(start, end),
       hasReachedMax: end >= total,

@@ -31,6 +31,10 @@ import 'package:universities_app/features/universities/domain/services/universit
     as _i129;
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart'
     as _i729;
+import 'package:universities_app/features/universities/presentation/bloc/layout_cubit.dart'
+    as _i299;
+import 'package:universities_app/features/universities/presentation/bloc/universities_bloc.dart'
+    as _i986;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -40,6 +44,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
+    gh.factory<_i299.LayoutCubit>(() => _i299.LayoutCubit());
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i583.GoRouter>(() => registerModule.goRouter);
     gh.lazySingleton<_i265.HtmlEntityDecoder>(() => _i265.HtmlEntityDecoder());
@@ -69,6 +74,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i729.GetUniversitiesPage>(
       () => _i729.GetUniversitiesPage(gh<_i874.UniversitiesRepository>()),
+    );
+    gh.factory<_i986.UniversitiesBloc>(
+      () => _i986.UniversitiesBloc(gh<_i729.GetUniversitiesPage>()),
     );
     return this;
   }
