@@ -29,6 +29,7 @@ jobs:
         with:
           flutter-version: '3.50.1'
           cache: true
+      - run: flutter pub get
       - run: dart format --set-exit-if-changed lib test
 
   test:
