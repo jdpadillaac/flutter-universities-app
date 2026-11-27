@@ -2,8 +2,8 @@
 
 `StudentCountCard` y `StudentCountField`: `lib/features/universities/presentation/pages/university_detail/widgets/`. `StudentCountErrorMessage`: `pages/university_detail/student_count_error_message.dart`.
 
-`StudentCount` vive en `lib/features/universities/domain/value_objects/student_count.dart`. El máximo permitido es `1_000_000` (`StudentCount.max`).
+`StudentCount` vive en `lib/features/universities/domain/value_objects/student_count.dart`. El máximo permitido es `1000000` (`StudentCount.max`).
 
-`StudentCountError`: `empty`, `notANumber`, `mustBePositive`, `tooLarge`. Solo enteros, mayor que cero y como máximo el límite anterior. Los errores se muestran en detalle solo tras interactuar con el campo.
+`StudentCountError`: `empty`, `notANumber`, `mustBePositive`, `tooLarge`. Solo enteros, mayor que cero y como máximo el límite anterior.
 
-`UniversityDetailBloc` valida con `StudentCount.parse`. El botón Guardar persiste el conteo en `UniversityExtrasRepository`; la imagen se guarda al elegirla, sin pasar por Guardar.
+El campo usa `FilteringTextInputFormatter.digitsOnly`. `UniversityDetailBloc` valida con `StudentCount.parse` en cada cambio. El error que ve el usuario es `visibleError`, y solo existe si `studentsTouched` es true. Guardar usa `isValid` (parse correcto y texto no vacío) y persiste en `UniversityExtrasRepository`. La imagen se guarda al elegirla, sin pasar por Guardar. Un guardado correcto pone `StudentCountSaveStatus.saved` y la page muestra el snackbar de éxito.
