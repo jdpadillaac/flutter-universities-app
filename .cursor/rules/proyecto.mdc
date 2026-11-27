@@ -1,0 +1,12 @@
+---
+description: Contexto de la app de universidades y regla de idioma
+alwaysApply: true
+---
+
+# Universities
+
+App Flutter de universidades con Clean Architecture. Los datos salen de un JSON en S3. La presentación es un placeholder de lista y detalle. El coverage global mínimo es 90%.
+
+Lee `agents.md` antes de explorar el repo.
+
+Responder siempre en español, incluidos los planes. Código, identificadores y comentarios en inglés.
