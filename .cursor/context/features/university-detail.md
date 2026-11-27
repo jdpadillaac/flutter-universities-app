@@ -1,7 +1,7 @@
 # Detalle de universidad
 
-`UniversityDetailPage` monta `UniversityDetailBloc` con `UniversityDetailRequested(id)`. Muestra nombre, país, provincia (`No disponible` si es null), dominios y páginas web.
+`UniversityDetailPage` monta `UniversityDetailBloc` con `UniversityDetailRequested(id)`. UI: `UniversityImagePicker`, nombre, chip país, `UniversityInfoCard` y `StudentCountCard`.
 
-La imagen abre un bottom sheet (Cámara / Galería). El campo de estudiantes usa solo dígitos; Guardar requiere un `StudentCount` válido y muestra confirmación por SnackBar.
+Cámara y galería disparan eventos al bloc; `StudentCountField` valida dígitos y habilita Guardar solo con `StudentCount` válido. SnackBars usan `AppLocalizations`.
 
-Los extras (imagen y conteo) viven en `UniversityExtrasRepository`, en memoria durante la sesión. La carga del catálogo usa `GetUniversityById`; un id desconocido devuelve `NotFoundFailure`.
+Extras en `UniversityExtrasRepository` (sesión). Id desconocido → `notFound`.

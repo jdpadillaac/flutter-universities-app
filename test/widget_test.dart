@@ -12,7 +12,6 @@ import 'package:universities_app/features/universities/domain/services/universit
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
-import 'package:universities_app/features/universities/presentation/pages/universities_page.dart';
 
 class MockGetUniversitiesPage extends Mock implements GetUniversitiesPage {}
 
@@ -84,7 +83,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.text(UniversitiesPage.title), findsOneWidget);
+    expect(find.text('Universidades'), findsOneWidget);
     expect(find.text('Sample University'), findsOneWidget);
   });
 
@@ -93,12 +92,12 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 100));
 
-    expect(find.byType(ListView), findsOneWidget);
+    expect(find.byType(CustomScrollView), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.grid_view));
     await tester.pumpAndSettle();
 
-    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byType(CustomScrollView), findsOneWidget);
   });
 
   testWidgets('opens university detail', (tester) async {
@@ -109,7 +108,7 @@ void main() {
     await tester.tap(find.text('Sample University'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Country: Country'), findsOneWidget);
+    expect(find.text('CO · Country'), findsOneWidget);
     expect(find.textContaining('No disponible'), findsOneWidget);
   });
 }

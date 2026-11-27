@@ -1,0 +1,12 @@
+---
+description: Widgets stateless, archivos propios y tokens de tema
+alwaysApply: true
+---
+
+# Widgets
+
+- StatelessWidget por defecto. StatefulWidget solo si el widget necesita un controller con dispose.
+- Los únicos StatefulWidget permitidos son `UniversitiesScrollView` y `StudentCountField`.
+- El estado de negocio y de UI vive en Bloc/Cubit. `setState` solo para sincronizar un controller local.
+- Prohibidos métodos que construyen widgets (`_buildHeader`, etc.). Cada pieza de UI es una clase widget en su propio archivo.
+- Colores, espaciado, radios y tamaños fijos vienen de `lib/core/theme/`. No uses literales hex ni medidas sueltas en widgets de presentación.

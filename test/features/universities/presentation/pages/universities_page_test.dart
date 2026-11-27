@@ -15,6 +15,10 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
 import 'package:universities_app/features/universities/presentation/bloc/universities_state.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities_page.dart';
+import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart';
+import 'package:universities_app/features/universities/presentation/widgets/university_grid_card.dart';
+import 'package:universities_app/features/universities/presentation/widgets/university_list_tile.dart';
+import '../../../../support/localized_material_app.dart';
 
 class MockGetUniversitiesPage extends Mock implements GetUniversitiesPage {}
 
@@ -48,14 +52,16 @@ Widget buildListHarness({
   required UniversityThumbnailsBloc thumbnailsBloc,
   LayoutCubit? layoutCubit,
 }) {
-  return MaterialApp(
-    home: MultiBlocProvider(
+  return LocalizedMaterialApp(
+    child: MultiBlocProvider(
       providers: [
         BlocProvider.value(value: universitiesBloc),
         BlocProvider.value(value: thumbnailsBloc),
         BlocProvider(create: (_) => layoutCubit ?? LayoutCubit()),
       ],
-      child: const UniversitiesView(),
+      child: const UniversitiesView(
+        initialsResolver: UniversityInitialsResolver(),
+      ),
     ),
   );
 }
@@ -86,7 +92,7 @@ void main() {
       ),
     );
 
-    expect(find.text('No universities available.'), findsOneWidget);
+    expect(find.text('No hay universidades disponibles.'), findsOneWidget);
   });
 
   testWidgets('shows progress for the initial state', (tester) async {
@@ -136,7 +142,10 @@ void main() {
       ),
     );
 
-    expect(find.text('offline'), findsOneWidget);
+    expect(
+      find.text('Ocurrió un error de red. Inténtalo de nuevo.'),
+      findsOneWidget,
+    );
     await tester.tap(find.text('Reintentar'));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 50));
@@ -161,7 +170,10 @@ void main() {
     );
 
     expect(find.text('University 0'), findsOneWidget);
-    expect(find.text('append failed'), findsOneWidget);
+    expect(
+      find.text('Ocurrió un error de red. Inténtalo de nuevo.'),
+      findsOneWidget,
+    );
     expect(find.text('Reintentar'), findsOneWidget);
   });
 
@@ -194,10 +206,10 @@ void main() {
       ),
     );
 
-    expect(find.byType(ListView), findsOneWidget);
+    expect(find.byType(UniversityListTile), findsWidgets);
     await tester.tap(find.byIcon(Icons.grid_view));
     await tester.pumpAndSettle();
-    expect(find.byType(GridView), findsOneWidget);
+    expect(find.byType(UniversityGridCard), findsWidgets);
   });
 
   testWidgets('requests the next page near the scroll end', (tester) async {

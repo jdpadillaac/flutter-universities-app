@@ -1,7 +1,7 @@
 # Lista de universidades
 
-`UniversitiesPage` usa `UniversitiesBloc`, `LayoutCubit` y `UniversityThumbnailsBloc`. Carga la página 0 al abrir, scroll infinito con `ScrollController` (~200 px antes del final) y alterna lista/grid desde el `AppBar`.
+`UniversitiesPage` usa `UniversitiesBloc`, `LayoutCubit` y `UniversityThumbnailsBloc`. `UniversitiesHeader` y `LayoutToggle` alternan lista/cuadrícula. El catálogo vive en `UniversitiesScrollView` (scroll infinito, umbral 200 px).
 
-Switch exhaustivo sobre `UniversitiesState`: loading, failure vacío con Reintentar, failure con ítems, vacío y cargado con footer de carga.
+Estados: carga centrada, vacío, error con Reintentar, lista/cuadrícula con `LoadMoreIndicator` y banner de error con ítems ya cargados.
 
-Ítems reutilizables: `UniversityListTile` y `UniversityGridCard` con miniatura desde extras de sesión. Tap navega con `go_router` al detalle por id.
+Ítems: `UniversityListTile` y `UniversityGridCard` con `UniversityAvatar` (imagen de sesión o iniciales vía `UniversityInitialsResolver`). Tap navega al detalle con `go_router`.
