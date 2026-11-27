@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# Stop hook: run coverage when Dart sources changed since the last pass.
 set -euo pipefail
 
 cd "$(dirname "$0")/../.."
 
-# Consume the stop-event payload.
 cat >/dev/null
 
 stamp="coverage/.gate_stamp"
@@ -24,7 +22,9 @@ if [[ "$needs_run" -eq 0 ]]; then
   exit 0
 fi
 
-if ! output="$(tool/coverage.sh 2>&1)"; then
+export PATH="${PATH}:${HOME}/.pub-cache/bin"
+
+if ! output="$(very_good test --coverage --min-coverage 90 2>&1)"; then
   jq -n --arg details "$output" '{
     followup_message: ("La compuerta de coverage falló. Corrige los tests o sube el coverage global al menos a 90%.\n\n" + $details)
   }'

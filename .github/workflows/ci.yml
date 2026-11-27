@@ -7,8 +7,8 @@ on:
       - main
 
 jobs:
-  analyze:
-    name: Analyze
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,32 +16,10 @@ jobs:
         with:
           flutter-version: '3.50.1'
           cache: true
-      - run: flutter pub get
+      - run: dart pub global activate very_good_cli
+      - run: echo "$HOME/.pub-cache/bin" >> "$GITHUB_PATH"
+      - run: very_good packages get
       - run: dart run build_runner build --delete-conflicting-outputs
+      - run: dart format --set-exit-if-changed .
       - run: flutter analyze
-
-  format:
-    name: Format
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.50.1'
-          cache: true
-      - run: flutter pub get
-      - run: dart format --set-exit-if-changed lib test
-
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.50.1'
-          cache: true
-      - run: flutter pub get
-      - run: dart run build_runner build --delete-conflicting-outputs
-      - run: sudo apt-get install -y lcov
-      - run: FLUTTER=flutter tool/coverage.sh
+      - run: very_good test --coverage --min-coverage 90

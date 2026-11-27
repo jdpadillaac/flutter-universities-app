@@ -1,0 +1,12 @@
+---
+description: Tests por clase inyectable con mocktail
+alwaysApply: true
+---
+
+# Tests
+
+Cada clase inyectable tiene test. Si colabora con otra clase, el test usa mocktail.
+
+- `void main` de los tests se queda: el framework lo exige.
+- Los lectores de fixtures y los stubs de colaboradores son clases, no funciones sueltas.
+- El parser corre en otro isolate. Un mock de mocktail no viaja en ese closure; el test del parser usa el mapper real o una subclase enviable, y el data source sí mockea al parser.

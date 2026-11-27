@@ -7,21 +7,22 @@ import 'package:universities_app/features/universities/domain/entities/universit
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/repositories/universities_repository.dart';
 
-/// Slices the university catalog into a 1-based page.
 @injectable
 class GetUniversitiesPage {
-  /// Creates a use case that reads the universities repository.
   const GetUniversitiesPage(this._repository);
 
   final UniversitiesRepository _repository;
 
-  /// Returns [page] (starting at 1) with [pageSize] items (default 20).
   Future<Result<UniversitiesPage, Failure>> call({
     required int page,
     int pageSize = 20,
   }) async {
-    assert(page >= 1, 'page must be >= 1');
-    assert(pageSize > 0, 'pageSize must be > 0');
+    if (page < 1) {
+      return const Err(UnexpectedFailure(message: 'page must be >= 1'));
+    }
+    if (pageSize <= 0) {
+      return const Err(UnexpectedFailure(message: 'pageSize must be > 0'));
+    }
 
     final result = await _repository.getUniversities();
     return result.map((universities) => _slice(universities, page, pageSize));

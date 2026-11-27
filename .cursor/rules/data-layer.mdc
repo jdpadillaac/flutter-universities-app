@@ -1,0 +1,14 @@
+---
+description: Contrato de la capa data de universidades
+alwaysApply: true
+---
+
+# Data
+
+El catálogo se descarga como texto y se convierte en entidades dentro de `data`.
+
+- `UniversityDto` vive en `features/universities/data/datasources/remote/dtos/` y usa freezed con json_serializable. No tiene `toEntity`.
+- `UniversityDtoMapper` recibe `HtmlEntityDecoder` y `UniversityIdGenerator`.
+- `UniversitiesJsonParser` no usa Dio ni streams. `jsonDecode`, el DTO y el mapeo corren dentro de `Isolate.run` con un closure.
+- `UniversitiesRemoteDataSource` depende de `ApiClient` y del parser, y devuelve `Result`.
+- `UniversitiesRepositoryImpl` guarda en memoria solo la lista exitosa.

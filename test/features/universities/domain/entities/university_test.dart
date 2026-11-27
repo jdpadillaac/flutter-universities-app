@@ -2,21 +2,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 
 void main() {
-  test('buildId is stable and normalizes text', () {
-    const name = 'Marywood University';
-    const domain = 'marywood.edu';
+  const university = University(
+    id: 'marywood-university--marywood-edu',
+    name: 'Marywood University',
+    country: 'United States',
+    countryCode: 'US',
+    domains: ['marywood.edu'],
+    webPages: ['http://marywood.edu'],
+  );
 
-    expect(
-      University.buildId(name, domain),
-      'marywood-university--marywood-edu',
+  test('compares universities by value', () {
+    const same = University(
+      id: 'marywood-university--marywood-edu',
+      name: 'Marywood University',
+      country: 'United States',
+      countryCode: 'US',
+      domains: ['marywood.edu'],
+      webPages: ['http://marywood.edu'],
     );
-    expect(University.buildId(name, domain), University.buildId(name, domain));
-  });
+    const renamed = University(
+      id: 'marywood-university--marywood-edu',
+      name: 'Other',
+      country: 'United States',
+      countryCode: 'US',
+      domains: ['marywood.edu'],
+      webPages: ['http://marywood.edu'],
+    );
 
-  test('buildId tolerates an empty domain', () {
-    expect(
-      University.buildId('Marywood University', ''),
-      'marywood-university--',
-    );
+    expect(university, same);
+    expect(university, isNot(renamed));
   });
 }

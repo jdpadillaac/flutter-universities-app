@@ -1,0 +1,8 @@
+---
+description: Preguntar cuando falte información en lugar de asumir
+alwaysApply: true
+---
+
+# Sin suposiciones
+
+Si falta un dato, hay más de una opción válida o el código no lo confirma, pregunta antes de implementar. No inventes criterios, campos, pantallas ni comportamiento.

@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:universities_app/core/di/injection.dart';
 import 'package:universities_app/core/theme/app_theme.dart';
 
-/// Root widget wiring theme and navigation.
 class UniversitiesApp extends StatelessWidget {
   const UniversitiesApp({super.key});
 

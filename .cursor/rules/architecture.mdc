@@ -1,0 +1,13 @@
+---
+description: Clean Architecture por feature y límites entre capas
+alwaysApply: true
+---
+
+# Arquitectura
+
+La app está organizada por feature en `domain`, `data` y `presentation`. `lib/core/` guarda red, errores, utilidades, inyección, router y tema.
+
+- El dominio no importa `data`, freezed, json_serializable ni Dio.
+- Las entidades son clases `Equatable` con campos `final` y constructor `const`.
+- Los DTOs no salen de `data`. El mapeo a entidad vive en `UniversityDtoMapper`.
+- La presentación actual es un placeholder de lista y detalle. No añadas pantallas que el código no tenga.

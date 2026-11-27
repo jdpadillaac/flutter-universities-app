@@ -5,14 +5,37 @@ import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/features/universities/domain/entities/universities_page.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/repositories/universities_repository.dart';
+import 'package:universities_app/features/universities/domain/services/university_id_generator.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart';
 
 class MockUniversitiesRepository extends Mock
     implements UniversitiesRepository {}
 
+class UniversityCatalog {
+  const UniversityCatalog(this._ids);
+
+  final UniversityIdGenerator _ids;
+
+  List<University> take(int count) {
+    return List.generate(count, (index) {
+      final domain = 'u$index.edu';
+      final name = 'University $index';
+      return University(
+        id: _ids.buildId(name, domain),
+        name: name,
+        country: 'Country',
+        countryCode: 'CO',
+        domains: [domain],
+        webPages: ['https://$domain'],
+      );
+    });
+  }
+}
+
 void main() {
   late MockUniversitiesRepository repository;
   late GetUniversitiesPage useCase;
+  const catalog = UniversityCatalog(UniversityIdGenerator());
 
   setUp(() {
     repository = MockUniversitiesRepository();
@@ -20,7 +43,7 @@ void main() {
   });
 
   test('returns the first page and keeps the default page size', () async {
-    final universities = _universities(3);
+    final universities = catalog.take(3);
     when(
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
@@ -34,7 +57,7 @@ void main() {
   });
 
   test('returns a partial last page', () async {
-    final universities = _universities(5);
+    final universities = catalog.take(5);
     when(
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
@@ -48,7 +71,7 @@ void main() {
   });
 
   test('returns the first slice when more pages remain', () async {
-    final universities = _universities(5);
+    final universities = catalog.take(5);
     when(
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
@@ -62,7 +85,7 @@ void main() {
   });
 
   test('returns an empty page past the end', () async {
-    final universities = _universities(5);
+    final universities = catalog.take(5);
     when(
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
@@ -85,19 +108,24 @@ void main() {
 
     expect(result.unwrapErr(), failure);
   });
-}
 
-List<University> _universities(int count) {
-  return List.generate(count, (index) {
-    final domain = 'u$index.edu';
-    final name = 'University $index';
-    return University(
-      id: University.buildId(name, domain),
-      name: name,
-      country: 'Country',
-      countryCode: 'CO',
-      domains: [domain],
-      webPages: ['https://$domain'],
+  test('returns UnexpectedFailure when page is below 1', () async {
+    final result = await useCase(page: 0);
+
+    expect(
+      result.unwrapErr(),
+      const UnexpectedFailure(message: 'page must be >= 1'),
     );
+    verifyNever(repository.getUniversities);
+  });
+
+  test('returns UnexpectedFailure when pageSize is below 1', () async {
+    final result = await useCase(page: 1, pageSize: 0);
+
+    expect(
+      result.unwrapErr(),
+      const UnexpectedFailure(message: 'pageSize must be > 0'),
+    );
+    verifyNever(repository.getUniversities);
   });
 }

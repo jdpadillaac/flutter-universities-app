@@ -1,0 +1,10 @@
+---
+description: Estado de presentación todavía sin implementar
+alwaysApply: true
+---
+
+# Estado
+
+`flutter_bloc` está en el `pubspec`. No hay `Bloc` ni `Cubit` en el código.
+
+La lista y el detalle son `StatelessWidget`. No añadas un gestor de estado hasta que una funcionalidad real lo necesite. Cuando haga falta, usa `flutter_bloc`.

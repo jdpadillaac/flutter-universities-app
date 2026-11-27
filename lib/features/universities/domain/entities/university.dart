@@ -1,27 +1,32 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
-part 'university.freezed.dart';
+class University extends Equatable {
+  const University({
+    required this.id,
+    required this.name,
+    required this.country,
+    required this.countryCode,
+    required this.domains,
+    required this.webPages,
+    this.stateProvince,
+  });
 
-/// A university from the remote catalog.
-@freezed
-abstract class University with _$University {
-  /// Creates a university.
-  const factory University({
-    required String id,
-    required String name,
-    required String country,
-    required String countryCode,
-    required List<String> domains,
-    required List<String> webPages,
-    String? stateProvince,
-  }) = _University;
+  final String id;
+  final String name;
+  final String country;
+  final String countryCode;
+  final List<String> domains;
+  final List<String> webPages;
+  final String? stateProvince;
 
-  /// Stable id from [name] and [firstDomain], safe as a route param.
-  ///
-  /// Each value is lowercased and every non-alphanumeric run becomes `-`.
-  static String buildId(String name, String firstDomain) =>
-      '${_slug(name)}--${_slug(firstDomain)}';
+  @override
+  List<Object?> get props => [
+    id,
+    name,
+    country,
+    countryCode,
+    domains,
+    webPages,
+    stateProvince,
+  ];
 }
-
-String _slug(String value) =>
-    value.toLowerCase().replaceAll(RegExp('[^a-z0-9]+'), '-');
