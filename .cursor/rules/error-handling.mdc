@@ -1,0 +1,15 @@
+---
+description: Errores con Result de oxidized y un solo try/catch
+alwaysApply: true
+---
+
+# Errores
+
+El tipo de error es `Failure` dentro de `Result` de oxidized 6.2.0.
+
+- El único `try/catch` de `lib/` está en `ApiClient` y solo captura `DioException`.
+- `Result.of` y `Result.asyncOf` capturan únicamente el tipo `E`. Para `jsonDecode` y `fromJson` usa `Result<T, Object>.of(...).mapErr(...)` y mapea a `ParsingFailure`.
+- Un JSON que no sea lista, o un elemento que no sea objeto, devuelve `Err` directo.
+- No uses `unwrap`, `expect` ni `throw` en `lib/`.
+- No uses `assert` para validar argumentos de casos de uso. Devuelve `Err(UnexpectedFailure)`.
+- El repositorio no traduce excepciones: el data source ya devuelve `Result`.

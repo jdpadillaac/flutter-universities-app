@@ -1,14 +1,12 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 
-part 'universities_page.freezed.dart';
+class UniversitiesPage extends Equatable {
+  const UniversitiesPage({required this.items, required this.hasReachedMax});
 
-/// One local page of [University] items.
-@freezed
-abstract class UniversitiesPage with _$UniversitiesPage {
-  /// Creates a page.
-  const factory UniversitiesPage({
-    required List<University> items,
-    required bool hasReachedMax,
-  }) = _UniversitiesPage;
+  final List<University> items;
+  final bool hasReachedMax;
+
+  @override
+  List<Object?> get props => [items, hasReachedMax];
 }

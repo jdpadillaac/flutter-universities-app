@@ -1,0 +1,3 @@
+test:
+  min_coverage: 90
+  exclude_coverage: "**/*.g.dart **/*.freezed.dart **/*.config.dart lib/main.dart"

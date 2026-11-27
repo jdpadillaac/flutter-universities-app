@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:universities_app/core/router/app_routes.dart';
 
-/// Placeholder universities list screen.
 class UniversitiesListPage extends StatelessWidget {
   const UniversitiesListPage({super.key});
 

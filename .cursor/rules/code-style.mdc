@@ -1,0 +1,13 @@
+---
+description: Estilo de código sin comentarios ni funciones sueltas
+alwaysApply: true
+---
+
+# Estilo
+
+Código, identificadores y comentarios en inglés. Las respuestas al usuario van en español.
+
+- No escribas comentarios en `lib/` ni en `test/`.
+- No dejes funciones top-level en código propio. Las excepciones que el lenguaje o el generador exigen son `main` en `lib/main.dart`, `void main` en cada test y `configureDependencies` en `lib/core/di/injection.dart`.
+- `public_member_api_docs` permanece en `false`.
+- No regeneres el proyecto Flutter ni vuelvas a añadir la plataforma web.

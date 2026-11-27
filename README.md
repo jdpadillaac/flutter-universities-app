@@ -1,16 +1,23 @@
-# flutter_universities_app
+# Universities
 
-A new Flutter project.
+App Flutter de universidades. Clean Architecture por feature, catálogo JSON en S3 y pantallas placeholder de lista y detalle. Plataformas: Android e iOS.
 
-## Getting Started
+## Comandos
 
-This project is a starting point for a Flutter application.
+```bash
+very_good packages get
+fvm dart run build_runner build --delete-conflicting-outputs
+dart format --set-exit-if-changed .
+fvm flutter analyze
+very_good test --coverage --min-coverage 90
+fvm flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+El umbral de coverage y las exclusiones viven en `very_good.yaml`.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## ¿Por qué Very Good CLI?
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Comandos del equipo.** `very_good packages get` y `very_good test` concentran el flujo que usan CI y el hook, en lugar de scripts propios.
+- **Tests optimizados y coverage mínimo.** `very_good test` agrupa la suite para correrla más rápido y `very_good.yaml` fija el mínimo en 90%.
+- **`packages get` recursivo.** `very_good packages get` resuelve dependencias del paquete y de los paquetes anidados.
+- **Coherencia con `very_good_analysis` y VGV.** El análisis ya usa `very_good_analysis`. La CLI alinea tests, coverage y estilo con Very Good Ventures.

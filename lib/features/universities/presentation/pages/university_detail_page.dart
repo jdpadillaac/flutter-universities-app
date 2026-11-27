@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Placeholder university detail screen.
 class UniversityDetailPage extends StatelessWidget {
   const UniversityDetailPage({required this.universityId, super.key});
 

@@ -1,4 +1,3 @@
-/// HTTP client configuration for remote APIs.
 abstract final class ApiConfig {
   static const String baseUrl = 'https://tyba-assets.s3.amazonaws.com';
 
