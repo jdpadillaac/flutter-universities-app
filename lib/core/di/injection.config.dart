@@ -53,16 +53,12 @@ import 'package:universities_app/features/universities/domain/usecases/save_univ
     as _i576;
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart'
     as _i267;
-import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart'
-    as _i713;
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/layout_cubit.dart'
     as _i221;
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_bloc.dart'
     as _i717;
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_bloc.dart'
     as _i737;
-import 'package:universities_app/features/universities/presentation/pages/universities/university_initials_resolver.dart'
-    as _i330;
 import 'package:universities_app/features/universities/presentation/pages/university_detail/bloc/university_detail_bloc/university_detail_bloc.dart'
     as _i781;
 
@@ -82,12 +78,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i265.HtmlEntityDecoder>(() => _i265.HtmlEntityDecoder());
     gh.lazySingleton<_i129.UniversityIdGenerator>(
       () => const _i129.UniversityIdGenerator(),
-    );
-    gh.lazySingleton<_i713.FailureMessageResolver>(
-      () => const _i713.FailureMessageResolver(),
-    );
-    gh.lazySingleton<_i330.UniversityInitialsResolver>(
-      () => const _i330.UniversityInitialsResolver(),
     );
     gh.lazySingleton<_i814.UniversityExtrasRepository>(
       () => _i759.UniversityExtrasRepositoryImpl(),

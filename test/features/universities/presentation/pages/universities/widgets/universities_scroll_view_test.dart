@@ -11,7 +11,6 @@ import 'package:universities_app/features/universities/presentation/pages/univer
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_bloc.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_event.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_state.dart';
-import 'package:universities_app/features/universities/presentation/pages/universities/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/universities_scroll_view.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/university_list_tile.dart';
 import 'package:universities_app/l10n/generated/app_localizations.dart';
@@ -62,7 +61,6 @@ void main() {
                 child: UniversitiesScrollView(
                   items: [university],
                   imagePaths: const {},
-                  initialsResolver: const UniversityInitialsResolver(),
                 ),
               ),
               routes: [

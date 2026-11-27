@@ -21,23 +21,18 @@ class UniversityDetailPage extends StatelessWidget {
       create: (_) =>
           getIt<UniversityDetailBloc>()
             ..add(UniversityDetailRequested(universityId)),
-      child: UniversityDetailView(
-        failureMessageResolver: getIt<FailureMessageResolver>(),
-      ),
+      child: const UniversityDetailView(),
     );
   }
 }
 
 class UniversityDetailView extends StatelessWidget {
-  const UniversityDetailView({required this.failureMessageResolver, super.key});
-
-  final FailureMessageResolver failureMessageResolver;
+  const UniversityDetailView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return _UniversityDetailFeedbackListener(
-      failureMessageResolver: failureMessageResolver,
-      child: const Scaffold(
+    return const _UniversityDetailFeedbackListener(
+      child: Scaffold(
         appBar: UniversityDetailAppBar(),
         body: _UniversityDetailBody(),
       ),
@@ -45,13 +40,10 @@ class UniversityDetailView extends StatelessWidget {
   }
 }
 
-class _UniversityDetailFeedbackListener extends StatelessWidget {
-  const _UniversityDetailFeedbackListener({
-    required this.failureMessageResolver,
-    required this.child,
-  });
+class _UniversityDetailFeedbackListener extends StatelessWidget
+    with FailureMessageResolver {
+  const _UniversityDetailFeedbackListener({required this.child});
 
-  final FailureMessageResolver failureMessageResolver;
   final Widget child;
 
   bool _shouldListen(
@@ -73,7 +65,7 @@ class _UniversityDetailFeedbackListener extends StatelessWidget {
     return switch (state.saveStatus) {
       StudentCountSaveStatus.saved => l10n.savedSuccess,
       StudentCountSaveStatus.idle => switch (state.imageFailure) {
-        final failure? => failureMessageResolver.resolve(failure, l10n),
+        final failure? => messageFor(failure, l10n),
         null => null,
       },
     };

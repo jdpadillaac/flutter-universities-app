@@ -35,15 +35,11 @@ class UniversitiesEmptyState extends StatelessWidget {
   }
 }
 
-class UniversitiesFailureState extends StatelessWidget {
-  const UniversitiesFailureState({
-    required this.failure,
-    required this.failureMessageResolver,
-    super.key,
-  });
+class UniversitiesFailureState extends StatelessWidget
+    with FailureMessageResolver {
+  const UniversitiesFailureState({required this.failure, super.key});
 
   final Failure failure;
-  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +53,7 @@ class UniversitiesFailureState extends StatelessWidget {
             const _UniversitiesFailureIcon(),
             const SizedBox(height: AppSpacing.md),
             Text(
-              failureMessageResolver.resolve(failure, l10n),
+              messageFor(failure, l10n),
               style: AppTypography.body,
               textAlign: TextAlign.center,
             ),
@@ -70,15 +66,11 @@ class UniversitiesFailureState extends StatelessWidget {
   }
 }
 
-class UniversitiesInlineFailureBanner extends StatelessWidget {
-  const UniversitiesInlineFailureBanner({
-    required this.failure,
-    required this.failureMessageResolver,
-    super.key,
-  });
+class UniversitiesInlineFailureBanner extends StatelessWidget
+    with FailureMessageResolver {
+  const UniversitiesInlineFailureBanner({required this.failure, super.key});
 
   final Failure failure;
-  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +86,7 @@ class UniversitiesInlineFailureBanner extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                failureMessageResolver.resolve(failure, l10n),
+                messageFor(failure, l10n),
                 style: AppTypography.caption,
               ),
             ),

@@ -25,14 +25,12 @@ class UniversitiesScrollView extends StatefulWidget {
   const UniversitiesScrollView({
     required this.items,
     required this.imagePaths,
-    required this.initialsResolver,
     this.showLoadMore = false,
     super.key,
   });
 
   final List<University> items;
   final Map<String, String> imagePaths;
-  final UniversityInitialsResolver initialsResolver;
   final bool showLoadMore;
 
   @override
@@ -93,7 +91,6 @@ class UniversitiesScrollViewState extends State<UniversitiesScrollView> {
         _UniversitiesLayoutSliver(
           items: widget.items,
           imagePaths: widget.imagePaths,
-          initialsResolver: widget.initialsResolver,
           onOpenDetail: _openDetail,
         ),
         if (widget.showLoadMore)
@@ -107,13 +104,11 @@ class _UniversitiesLayoutSliver extends StatelessWidget {
   const _UniversitiesLayoutSliver({
     required this.items,
     required this.imagePaths,
-    required this.initialsResolver,
     required this.onOpenDetail,
   });
 
   final List<University> items;
   final Map<String, String> imagePaths;
-  final UniversityInitialsResolver initialsResolver;
   final void Function(University university) onOpenDetail;
 
   @override
@@ -123,13 +118,11 @@ class _UniversitiesLayoutSliver extends StatelessWidget {
         ListLayout.list => UniversitiesListSliver(
           items: items,
           imagePaths: imagePaths,
-          initialsResolver: initialsResolver,
           onOpenDetail: onOpenDetail,
         ),
         ListLayout.grid => UniversitiesGridSliver(
           items: items,
           imagePaths: imagePaths,
-          initialsResolver: initialsResolver,
           onOpenDetail: onOpenDetail,
         ),
       },
@@ -137,18 +130,17 @@ class _UniversitiesLayoutSliver extends StatelessWidget {
   }
 }
 
-class UniversitiesListSliver extends StatelessWidget {
+class UniversitiesListSliver extends StatelessWidget
+    with UniversityInitialsResolver {
   const UniversitiesListSliver({
     required this.items,
     required this.imagePaths,
-    required this.initialsResolver,
     required this.onOpenDetail,
     super.key,
   });
 
   final List<University> items;
   final Map<String, String> imagePaths;
-  final UniversityInitialsResolver initialsResolver;
   final void Function(University university) onOpenDetail;
 
   @override
@@ -168,7 +160,7 @@ class UniversitiesListSliver extends StatelessWidget {
           itemBuilder: (context, index) => UniversityListTile(
             university: items[index],
             imagePath: imagePaths[items[index].id],
-            initials: initialsResolver.resolve(items[index].name),
+            initials: initialsFrom(items[index].name),
             onTap: () => onOpenDetail(items[index]),
           ),
         ),
@@ -189,18 +181,17 @@ class _UniversitiesListDivider extends StatelessWidget {
   }
 }
 
-class UniversitiesGridSliver extends StatelessWidget {
+class UniversitiesGridSliver extends StatelessWidget
+    with UniversityInitialsResolver {
   const UniversitiesGridSliver({
     required this.items,
     required this.imagePaths,
-    required this.initialsResolver,
     required this.onOpenDetail,
     super.key,
   });
 
   final List<University> items;
   final Map<String, String> imagePaths;
-  final UniversityInitialsResolver initialsResolver;
   final void Function(University university) onOpenDetail;
 
   @override
@@ -218,7 +209,7 @@ class UniversitiesGridSliver extends StatelessWidget {
           (context, index) => UniversityGridCard(
             university: items[index],
             imagePath: imagePaths[items[index].id],
-            initials: initialsResolver.resolve(items[index].name),
+            initials: initialsFrom(items[index].name),
             onTap: () => onOpenDetail(items[index]),
           ),
           childCount: items.length,
