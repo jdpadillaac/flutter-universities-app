@@ -1,6 +1,6 @@
 # Universities
 
-App Flutter de universidades. Clean Architecture por feature, catálogo JSON en S3 y pantallas placeholder de lista y detalle. Plataformas: Android e iOS.
+App Flutter de universidades para la prueba de Tyba. Catálogo desde S3, lista con scroll infinito, detalle con imagen (cámara o galería) y número de estudiantes en memoria durante la sesión. Plataformas: Android e iOS.
 
 ## Comandos
 
@@ -14,6 +14,11 @@ fvm flutter run
 ```
 
 El umbral de coverage y las exclusiones viven en `very_good.yaml`.
+
+## Permisos de cámara y galería
+
+- **iOS:** `NSCameraUsageDescription` y `NSPhotoLibraryUsageDescription` en `ios/Runner/Info.plist`.
+- **Android:** no se declara `android.permission.CAMERA`. Con `image_picker` 1.x la galería usa el Photo Picker del sistema; el plugin aporta `FileProvider` y el backport de GMS (`photopicker_activity`). La cámara se lanza por intent. En la app solo hay `<queries>` de `IMAGE_CAPTURE` para visibilidad en Android 11+. Añadir `CAMERA` obligaría al runtime a pedirlo sin mejorar el flujo actual.
 
 ## ¿Por qué Very Good CLI?
 
