@@ -20,3 +20,7 @@ Flutter 3.50.1, Dio, oxidized, injectable con GetIt, go_router, flutter_bloc, fr
 - No hay plataforma web.
 - No hay comentarios en `lib/` ni en `test/`.
 - `configureDependencies` sigue siendo una función top-level porque `@InjectableInit` solo se puede poner en funciones.
+
+## Documentación
+
+`README.md` resume funcionalidades, arquitectura en capas, decisiones, permisos de imagen, cobertura (~91%) y capturas pendientes.
