@@ -11,9 +11,9 @@ Estados de `UniversitiesBloc`:
 - `UniversitiesInitial` y `UniversitiesLoading`: `UniversitiesLoadingState`.
 - `UniversitiesLoaded` vacío: `UniversitiesEmptyState`.
 - `UniversitiesLoaded` con ítems: lista o cuadrícula; `LoadMoreIndicator` si `isLoadingMore`.
-- `UniversitiesFailure` sin ítems: `UniversitiesFailureState` con Reintentar.
-- `UniversitiesFailure` con ítems: la lista sigue visible y debajo va `UniversitiesInlineFailureBanner`.
+- `UniversitiesFailure` sin ítems: `UniversitiesFailureState` con Reintentar. Usa el mixin `FailureMessageResolver`.
+- `UniversitiesFailure` con ítems: la lista sigue visible y debajo va `UniversitiesInlineFailureBanner`, que usa el mismo mixin.
 
-Ítems: `UniversityListTile` y `UniversityGridCard` con `UniversityAvatar` (imagen de sesión o iniciales vía `UniversityInitialsResolver`). El tap hace `context.push` a `/universities/$id`. Al volver, el scroll view vuelve a pedir `UniversityThumbnailsRequested`. `UniversityThumbnailsBloc` lee `GetAllUniversityExtras` y publica solo los `imagePath` no nulos.
+Ítems: `UniversityListTile` y `UniversityGridCard` con `UniversityAvatar`. `UniversitiesListSliver` y `UniversitiesGridSliver` usan el mixin `UniversityInitialsResolver` y pasan las iniciales al avatar. El tap hace `context.push` a `/universities/$id`. Al volver, el scroll view vuelve a pedir `UniversityThumbnailsRequested`. `UniversityThumbnailsBloc` lee `GetAllUniversityExtras` y publica solo los `imagePath` no nulos.
 
 Para alternar lista o cuadrícula, ver `layout-toggle.md`.

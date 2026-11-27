@@ -6,4 +6,4 @@ Page, bloc y widgets: `lib/features/universities/presentation/pages/university_d
 
 En loaded la UI es `UniversityImagePicker`, nombre, chip de país, `UniversityInfoCard` y `StudentCountCard`. El conteo está en `student-count.md`. La imagen está en `image-picker.md`.
 
-`UniversityDetailLoaded` también lleva `saveStatus` e `imageFailure`. Un `BlocListener` muestra un snackbar con `AppLocalizations` cuando cambian y luego emite `UniversityDetailFeedbackDismissed`.
+`UniversityDetailLoaded` también lleva `saveStatus` e `imageFailure`. `_UniversityDetailFeedbackListener` usa el mixin `FailureMessageResolver` y muestra un snackbar con `AppLocalizations` cuando cambian; luego emite `UniversityDetailFeedbackDismissed`.

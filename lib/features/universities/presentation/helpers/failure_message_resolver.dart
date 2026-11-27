@@ -1,12 +1,8 @@
-import 'package:injectable/injectable.dart';
 import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/l10n/generated/app_localizations.dart';
 
-@lazySingleton
-class FailureMessageResolver {
-  const FailureMessageResolver();
-
-  String resolve(Failure failure, AppLocalizations l10n) {
+mixin FailureMessageResolver {
+  String messageFor(Failure failure, AppLocalizations l10n) {
     return switch (failure) {
       NetworkFailure() => l10n.failureNetwork,
       ParsingFailure() => l10n.failureParsing,

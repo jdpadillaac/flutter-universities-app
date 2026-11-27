@@ -20,7 +20,7 @@ Inter vía `google_fonts`: screenTitle, detailTitle, appBarTitle, itemTitle, bod
 - `LayoutToggle`: control segmentado 40×40; lee `LayoutCubit`.
 - `UniversitiesScrollView`: scroll infinito; único `StatefulWidget` de lista.
 - `UniversityListTile` / `UniversityGridCard`: ítems con `UniversityAvatar`.
-- `UniversityAvatar`: imagen de sesión o iniciales (`UniversityInitialsResolver`).
+- `UniversityAvatar`: imagen de sesión o iniciales. Las iniciales salen del mixin `UniversityInitialsResolver` en los slivers de lista y cuadrícula.
 - `LoadMoreIndicator` y vistas de estado en `universities_status_views.dart`.
 
 ## Componentes de detalle
@@ -29,4 +29,4 @@ Inter vía `google_fonts`: screenTitle, detailTitle, appBarTitle, itemTitle, bod
 
 ## Textos
 
-`lib/l10n/arb/app_es.arb` → `AppLocalizations`. `FailureMessageResolver` vive en `presentation/helpers/failure_message_resolver.dart`. `StudentCountErrorMessage` vive en `pages/university_detail/student_count_error_message.dart`.
+`lib/l10n/arb/app_es.arb` → `AppLocalizations`. El mixin `FailureMessageResolver` vive en `presentation/helpers/failure_message_resolver.dart` y lo usan las vistas de fallo de la lista y el listener del detalle. `StudentCountErrorMessage` vive en `pages/university_detail/student_count_error_message.dart`.

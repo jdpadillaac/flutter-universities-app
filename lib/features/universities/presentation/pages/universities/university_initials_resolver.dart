@@ -1,10 +1,5 @@
-import 'package:injectable/injectable.dart';
-
-@lazySingleton
-class UniversityInitialsResolver {
-  const UniversityInitialsResolver();
-
-  String resolve(String name) {
+mixin UniversityInitialsResolver {
+  String initialsFrom(String name) {
     final trimmed = name.trim();
     if (trimmed.isEmpty) {
       return '';

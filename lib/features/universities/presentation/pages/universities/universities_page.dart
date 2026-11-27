@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universities_app/core/di/injection.dart';
 import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
-import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/layout_cubit.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_bloc.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_event.dart';
@@ -11,7 +10,6 @@ import 'package:universities_app/features/universities/presentation/pages/univer
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_bloc.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_event.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_state.dart';
-import 'package:universities_app/features/universities/presentation/pages/universities/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/universities_header.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/universities_scroll_view.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/universities_status_views.dart';
@@ -34,37 +32,22 @@ class UniversitiesPage extends StatelessWidget {
                 ..add(const UniversityThumbnailsRequested()),
         ),
       ],
-      child: UniversitiesView(
-        initialsResolver: getIt<UniversityInitialsResolver>(),
-        failureMessageResolver: getIt<FailureMessageResolver>(),
-      ),
+      child: const UniversitiesView(),
     );
   }
 }
 
 class UniversitiesView extends StatelessWidget {
-  const UniversitiesView({
-    required this.initialsResolver,
-    required this.failureMessageResolver,
-    super.key,
-  });
-
-  final UniversityInitialsResolver initialsResolver;
-  final FailureMessageResolver failureMessageResolver;
+  const UniversitiesView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: SafeArea(
         child: Column(
           children: [
-            const UniversitiesHeader(),
-            Expanded(
-              child: _UniversitiesBody(
-                initialsResolver: initialsResolver,
-                failureMessageResolver: failureMessageResolver,
-              ),
-            ),
+            UniversitiesHeader(),
+            Expanded(child: _UniversitiesBody()),
           ],
         ),
       ),
@@ -73,13 +56,7 @@ class UniversitiesView extends StatelessWidget {
 }
 
 class _UniversitiesBody extends StatelessWidget {
-  const _UniversitiesBody({
-    required this.initialsResolver,
-    required this.failureMessageResolver,
-  });
-
-  final UniversityInitialsResolver initialsResolver;
-  final FailureMessageResolver failureMessageResolver;
+  const _UniversitiesBody();
 
   @override
   Widget build(BuildContext context) {
@@ -92,21 +69,12 @@ class _UniversitiesBody extends StatelessWidget {
         UniversitiesLoaded(:final items, :final isLoadingMore) =>
           _UniversitiesThumbnailsScrollView(
             items: items,
-            initialsResolver: initialsResolver,
             showLoadMore: isLoadingMore,
           ),
         UniversitiesFailure(:final items, :final failure) when items.isEmpty =>
-          UniversitiesFailureState(
-            failure: failure,
-            failureMessageResolver: failureMessageResolver,
-          ),
+          UniversitiesFailureState(failure: failure),
         UniversitiesFailure(:final items, :final failure) =>
-          _UniversitiesListWithFailure(
-            items: items,
-            failure: failure,
-            initialsResolver: initialsResolver,
-            failureMessageResolver: failureMessageResolver,
-          ),
+          _UniversitiesListWithFailure(items: items, failure: failure),
       },
     );
   }
@@ -116,29 +84,17 @@ class _UniversitiesListWithFailure extends StatelessWidget {
   const _UniversitiesListWithFailure({
     required this.items,
     required this.failure,
-    required this.initialsResolver,
-    required this.failureMessageResolver,
   });
 
   final List<University> items;
   final Failure failure;
-  final UniversityInitialsResolver initialsResolver;
-  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: _UniversitiesThumbnailsScrollView(
-            items: items,
-            initialsResolver: initialsResolver,
-          ),
-        ),
-        UniversitiesInlineFailureBanner(
-          failure: failure,
-          failureMessageResolver: failureMessageResolver,
-        ),
+        Expanded(child: _UniversitiesThumbnailsScrollView(items: items)),
+        UniversitiesInlineFailureBanner(failure: failure),
       ],
     );
   }
@@ -147,12 +103,10 @@ class _UniversitiesListWithFailure extends StatelessWidget {
 class _UniversitiesThumbnailsScrollView extends StatelessWidget {
   const _UniversitiesThumbnailsScrollView({
     required this.items,
-    required this.initialsResolver,
     this.showLoadMore = false,
   });
 
   final List<University> items;
-  final UniversityInitialsResolver initialsResolver;
   final bool showLoadMore;
 
   @override
@@ -164,7 +118,6 @@ class _UniversitiesThumbnailsScrollView extends StatelessWidget {
           UniversityThumbnailsLoaded(:final imagePaths) => imagePaths,
           UniversityThumbnailsInitial() => const <String, String>{},
         },
-        initialsResolver: initialsResolver,
         showLoadMore: showLoadMore,
       ),
     );

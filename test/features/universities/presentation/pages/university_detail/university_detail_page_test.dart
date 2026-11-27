@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
-import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail/bloc/university_detail_bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail/bloc/university_detail_bloc/university_detail_state.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail/university_detail_page.dart';
@@ -40,9 +39,7 @@ void main() {
     return LocalizedMaterialApp(
       child: BlocProvider<UniversityDetailBloc>.value(
         value: bloc,
-        child: const UniversityDetailView(
-          failureMessageResolver: FailureMessageResolver(),
-        ),
+        child: const UniversityDetailView(),
       ),
     );
   }
