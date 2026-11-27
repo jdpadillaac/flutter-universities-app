@@ -13,7 +13,7 @@ import 'package:universities_app/l10n/generated/app_localizations.dart';
 class StudentCountCard extends StatelessWidget {
   const StudentCountCard({required this.state, super.key});
 
-  final UniversityDetailState state;
+  final UniversityDetailLoaded state;
 
   static const StudentCountErrorMessage _errorMessage =
       StudentCountErrorMessage();
@@ -42,7 +42,7 @@ class StudentCountCard extends StatelessWidget {
               width: double.infinity,
               height: AppSizes.fieldHeight,
               child: FilledButton(
-                onPressed: state.isFormValid
+                onPressed: state.isValid
                     ? () => context.read<UniversityDetailBloc>().add(
                         const UniversityStudentsSaveRequested(),
                       )

@@ -39,6 +39,6 @@ final class UniversityStudentsSaveRequested extends UniversityDetailEvent {
   const UniversityStudentsSaveRequested();
 }
 
-final class UniversityDetailNoticeShown extends UniversityDetailEvent {
-  const UniversityDetailNoticeShown();
+final class UniversityDetailFeedbackDismissed extends UniversityDetailEvent {
+  const UniversityDetailFeedbackDismissed();
 }

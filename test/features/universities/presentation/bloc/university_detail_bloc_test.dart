@@ -77,14 +77,9 @@ void main() {
       ).thenReturn(const UniversityExtras(imagePath: '/img.jpg'));
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>()
-          .having(
-            (state) => state.status,
-            'status',
-            UniversityDetailStatus.ready,
-          )
-          .having((state) => state.university?.name, 'name', 'Sample')
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>()
+          .having((state) => state.university.name, 'name', 'Sample')
           .having((state) => state.imagePath, 'imagePath', '/img.jpg'),
     ],
   );
@@ -97,8 +92,8 @@ void main() {
       verifyNever(() => getUniversityById(any()));
     },
     expect: () => [
-      const UniversityDetailState(),
-      const UniversityDetailState(status: UniversityDetailStatus.notFound),
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailNotFound>(),
     ],
   );
 
@@ -112,21 +107,18 @@ void main() {
       );
     },
     expect: () => [
-      const UniversityDetailState(),
-      const UniversityDetailState(status: UniversityDetailStatus.notFound),
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailNotFound>(),
     ],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
     'shows validation error only after students changed',
     build: buildBloc,
-    seed: () => const UniversityDetailState(
-      status: UniversityDetailStatus.ready,
-      university: university,
-    ),
+    seed: () => const UniversityDetailLoaded(university: university),
     act: (bloc) => bloc.add(const UniversityStudentsChanged('0')),
     expect: () => [
-      isA<UniversityDetailState>()
+      isA<UniversityDetailLoaded>()
           .having((state) => state.studentsTouched, 'touched', true)
           .having(
             (state) => state.validationError,
@@ -160,13 +152,13 @@ void main() {
       ).called(1);
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
-        (state) => state.notice,
-        'notice',
-        UniversityDetailNotice.saved,
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
+        (state) => state.saveStatus,
+        'saveStatus',
+        StudentCountSaveStatus.saved,
       ),
     ],
   );
@@ -174,8 +166,7 @@ void main() {
   blocTest<UniversityDetailBloc, UniversityDetailState>(
     'ignores duplicate save events when the form is invalid',
     build: buildBloc,
-    seed: () => const UniversityDetailState(
-      status: UniversityDetailStatus.ready,
+    seed: () => const UniversityDetailLoaded(
       university: university,
       studentsInput: '0',
     ),
@@ -217,9 +208,9 @@ void main() {
       ).called(1);
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
         (state) => state.imagePath,
         'imagePath',
         '/tmp/photo.jpg',
@@ -244,28 +235,27 @@ void main() {
         ..add(const UniversityDetailRequested('u-id'))
         ..add(const UniversityImagePickRequested(ImageOrigin.gallery));
     },
-    expect: () => [const UniversityDetailState(), isA<UniversityDetailState>()],
-  );
-
-  blocTest<UniversityDetailBloc, UniversityDetailState>(
-    'clears notice after it is shown',
-    build: buildBloc,
-    seed: () => const UniversityDetailState(
-      status: UniversityDetailStatus.ready,
-      university: university,
-      notice: UniversityDetailNotice.saved,
-    ),
-    act: (bloc) => bloc.add(const UniversityDetailNoticeShown()),
     expect: () => [
-      const UniversityDetailState(
-        status: UniversityDetailStatus.ready,
-        university: university,
-      ),
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
     ],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
-    'emits image failure notice when the picker fails',
+    'clears feedback after it is dismissed',
+    build: buildBloc,
+    seed: () => const UniversityDetailLoaded(
+      university: university,
+      saveStatus: StudentCountSaveStatus.saved,
+    ),
+    act: (bloc) => bloc.add(const UniversityDetailFeedbackDismissed()),
+    expect: () => [
+      const UniversityDetailLoaded(university: university),
+    ],
+  );
+
+  blocTest<UniversityDetailBloc, UniversityDetailState>(
+    'stores image failure when the picker fails',
     build: buildBloc,
     act: (bloc) async {
       when(
@@ -282,18 +272,18 @@ void main() {
         ..add(const UniversityImagePickRequested(ImageOrigin.camera));
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
-        (state) => state.notice,
-        'notice',
-        UniversityDetailNotice.imageFailed,
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
+        (state) => state.imageFailure,
+        'imageFailure',
+        const UnexpectedFailure(),
       ),
     ],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
-    'emits permission denied when image pick fails with permissions',
+    'stores permission failure when pick is denied',
     build: buildBloc,
     act: (bloc) async {
       when(
@@ -310,12 +300,12 @@ void main() {
         ..add(const UniversityImagePickRequested(ImageOrigin.gallery));
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
-        (state) => state.notice,
-        'notice',
-        UniversityDetailNotice.permissionDenied,
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
+        (state) => state.imageFailure,
+        'imageFailure',
+        const PermissionDeniedFailure(),
       ),
     ],
   );

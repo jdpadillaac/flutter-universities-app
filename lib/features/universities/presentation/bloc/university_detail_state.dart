@@ -1,52 +1,64 @@
 import 'package:equatable/equatable.dart';
+import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
 
-enum UniversityDetailStatus { loading, ready, notFound }
+enum StudentCountSaveStatus { idle, saved }
 
-enum UniversityDetailNotice { none, saved, permissionDenied, imageFailed }
+sealed class UniversityDetailState extends Equatable {
+  const UniversityDetailState();
 
-class UniversityDetailState extends Equatable {
-  const UniversityDetailState({
-    this.status = UniversityDetailStatus.loading,
-    this.university,
+  @override
+  List<Object?> get props => [];
+}
+
+final class UniversityDetailLoading extends UniversityDetailState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class UniversityDetailNotFound extends UniversityDetailState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class UniversityDetailLoaded extends UniversityDetailState {
+  const UniversityDetailLoaded({
+    required this.university,
     this.imagePath,
     this.studentsInput = '',
     this.validationError,
     this.studentsTouched = false,
-    this.notice = UniversityDetailNotice.none,
-    this.imageFailedMessage,
+    this.saveStatus = StudentCountSaveStatus.idle,
+    this.imageFailure,
   });
 
-  final UniversityDetailStatus status;
-  final University? university;
+  final University university;
   final String? imagePath;
   final String studentsInput;
   final StudentCountError? validationError;
   final bool studentsTouched;
-  final UniversityDetailNotice notice;
-  final String? imageFailedMessage;
+  final StudentCountSaveStatus saveStatus;
+  final Failure? imageFailure;
 
-  bool get isFormValid =>
+  bool get isValid =>
       StudentCount.parse(studentsInput).isOk() && studentsInput.isNotEmpty;
 
   StudentCountError? get visibleError =>
       studentsTouched ? validationError : null;
 
-  UniversityDetailState copyWith({
-    UniversityDetailStatus? status,
+  UniversityDetailLoaded copyWith({
     University? university,
     String? imagePath,
     String? studentsInput,
     StudentCountError? validationError,
     bool? studentsTouched,
-    UniversityDetailNotice? notice,
-    String? imageFailedMessage,
+    StudentCountSaveStatus? saveStatus,
+    Failure? imageFailure,
     bool clearValidationError = false,
-    bool clearImageFailedMessage = false,
+    bool clearImageFailure = false,
   }) {
-    return UniversityDetailState(
-      status: status ?? this.status,
+    return UniversityDetailLoaded(
       university: university ?? this.university,
       imagePath: imagePath ?? this.imagePath,
       studentsInput: studentsInput ?? this.studentsInput,
@@ -54,22 +66,21 @@ class UniversityDetailState extends Equatable {
           ? null
           : validationError ?? this.validationError,
       studentsTouched: studentsTouched ?? this.studentsTouched,
-      notice: notice ?? this.notice,
-      imageFailedMessage: clearImageFailedMessage
+      saveStatus: saveStatus ?? this.saveStatus,
+      imageFailure: clearImageFailure
           ? null
-          : imageFailedMessage ?? this.imageFailedMessage,
+          : imageFailure ?? this.imageFailure,
     );
   }
 
   @override
   List<Object?> get props => [
-    status,
     university,
     imagePath,
     studentsInput,
     validationError,
     studentsTouched,
-    notice,
-    imageFailedMessage,
+    saveStatus,
+    imageFailure,
   ];
 }

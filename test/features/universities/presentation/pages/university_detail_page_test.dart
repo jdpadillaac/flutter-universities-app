@@ -25,19 +25,11 @@ void main() {
 
   setUp(() {
     bloc = MockUniversityDetailBloc();
-    when(() => bloc.state).thenReturn(
-      const UniversityDetailState(
-        status: UniversityDetailStatus.ready,
-        university: university,
-      ),
-    );
+    when(
+      () => bloc.state,
+    ).thenReturn(const UniversityDetailLoaded(university: university));
     when(() => bloc.stream).thenAnswer(
-      (_) => Stream.value(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
-          university: university,
-        ),
-      ),
+      (_) => Stream.value(const UniversityDetailLoaded(university: university)),
     );
     when(() => bloc.close()).thenAnswer((_) async {});
   });
@@ -56,12 +48,7 @@ void main() {
     'shows country chip and No disponible when state province is missing',
     (tester) async {
       await tester.pumpWidget(
-        buildHarness(
-          const UniversityDetailState(
-            status: UniversityDetailStatus.ready,
-            university: university,
-          ),
-        ),
+        buildHarness(const UniversityDetailLoaded(university: university)),
       );
 
       expect(find.text('CO · Colombia'), findsOneWidget);
@@ -74,8 +61,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
+        const UniversityDetailLoaded(
           university: university,
           studentsInput: '0',
         ),
@@ -89,12 +75,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
-          university: university,
-        ),
-      ),
+      buildHarness(const UniversityDetailLoaded(university: university)),
     );
 
     expect(find.text('Cámara'), findsOneWidget);
@@ -106,8 +87,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
+        const UniversityDetailLoaded(
           university: university,
           studentsInput: '0',
           studentsTouched: true,
@@ -126,11 +106,7 @@ void main() {
   testWidgets('shows back to list when university is not found', (
     tester,
   ) async {
-    await tester.pumpWidget(
-      buildHarness(
-        const UniversityDetailState(status: UniversityDetailStatus.notFound),
-      ),
-    );
+    await tester.pumpWidget(buildHarness(UniversityDetailNotFound()));
 
     expect(find.text('No se encontró la universidad.'), findsOneWidget);
     expect(find.text('Volver a la lista'), findsOneWidget);
@@ -139,8 +115,7 @@ void main() {
   testWidgets('enables save with valid student count', (tester) async {
     await tester.pumpWidget(
       buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
+        const UniversityDetailLoaded(
           university: university,
           studentsInput: '42',
           studentsTouched: true,

@@ -31,7 +31,7 @@ void main() {
     },
     act: (bloc) => bloc.add(const UniversityThumbnailsSubscriptionRequested()),
     expect: () => [
-      const UniversityThumbnailsState(imagePaths: {'a': '/a.jpg'}),
+      const UniversityThumbnailsLoaded(imagePaths: {'a': '/a.jpg'}),
     ],
   );
 }

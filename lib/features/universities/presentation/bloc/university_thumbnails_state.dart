@@ -1,13 +1,21 @@
 import 'package:equatable/equatable.dart';
 
-class UniversityThumbnailsState extends Equatable {
-  const UniversityThumbnailsState({this.imagePaths = const {}});
+sealed class UniversityThumbnailsState extends Equatable {
+  const UniversityThumbnailsState();
+
+  @override
+  List<Object?> get props => [];
+}
+
+final class UniversityThumbnailsInitial extends UniversityThumbnailsState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class UniversityThumbnailsLoaded extends UniversityThumbnailsState {
+  const UniversityThumbnailsLoaded({this.imagePaths = const {}});
 
   final Map<String, String> imagePaths;
-
-  UniversityThumbnailsState copyWith({Map<String, String>? imagePaths}) {
-    return UniversityThumbnailsState(imagePaths: imagePaths ?? this.imagePaths);
-  }
 
   @override
   List<Object?> get props => [imagePaths];

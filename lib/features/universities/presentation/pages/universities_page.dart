@@ -64,9 +64,15 @@ class UniversitiesView extends StatelessWidget {
                         UniversityThumbnailsState
                       >(
                         builder: (context, thumbnails) {
+                          final imagePaths = switch (thumbnails) {
+                            UniversityThumbnailsLoaded(:final imagePaths) =>
+                              imagePaths,
+                            UniversityThumbnailsInitial() =>
+                              const <String, String>{},
+                          };
                           return UniversitiesScrollView(
                             items: items,
-                            imagePaths: thumbnails.imagePaths,
+                            imagePaths: imagePaths,
                             initialsResolver: initialsResolver,
                             showLoadMore: isLoadingMore,
                           );
@@ -81,12 +87,18 @@ class UniversitiesView extends StatelessWidget {
                         UniversityThumbnailsState
                       >(
                         builder: (context, thumbnails) {
+                          final imagePaths = switch (thumbnails) {
+                            UniversityThumbnailsLoaded(:final imagePaths) =>
+                              imagePaths,
+                            UniversityThumbnailsInitial() =>
+                              const <String, String>{},
+                          };
                           return Column(
                             children: [
                               Expanded(
                                 child: UniversitiesScrollView(
                                   items: items,
-                                  imagePaths: thumbnails.imagePaths,
+                                  imagePaths: imagePaths,
                                   initialsResolver: initialsResolver,
                                 ),
                               ),

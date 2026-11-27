@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
 import 'package:universities_app/core/theme/app_typography.dart';
-import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
 import 'package:universities_app/features/universities/presentation/widgets/student_count_card.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_country_chip.dart';
@@ -10,17 +9,13 @@ import 'package:universities_app/features/universities/presentation/widgets/univ
 import 'package:universities_app/features/universities/presentation/widgets/university_info_card.dart';
 
 class UniversityDetailContent extends StatelessWidget {
-  const UniversityDetailContent({
-    required this.university,
-    required this.state,
-    super.key,
-  });
+  const UniversityDetailContent({required this.state, super.key});
 
-  final University university;
-  final UniversityDetailState state;
+  final UniversityDetailLoaded state;
 
   @override
   Widget build(BuildContext context) {
+    final university = state.university;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(

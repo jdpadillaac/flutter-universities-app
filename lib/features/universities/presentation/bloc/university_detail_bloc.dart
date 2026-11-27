@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oxidized/oxidized.dart';
-import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
 import 'package:universities_app/features/universities/domain/usecases/pick_university_image.dart';
@@ -20,12 +19,12 @@ class UniversityDetailBloc
     this._saveUniversityImage,
     this._saveUniversityStudentCount,
     this._pickUniversityImage,
-  ) : super(const UniversityDetailState()) {
+  ) : super(UniversityDetailLoading()) {
     on<UniversityDetailRequested>(_onDetailRequested);
     on<UniversityStudentsChanged>(_onStudentsChanged);
     on<UniversityImagePickRequested>(_onImagePickRequested);
     on<UniversityStudentsSaveRequested>(_onStudentsSaveRequested);
-    on<UniversityDetailNoticeShown>(_onNoticeShown);
+    on<UniversityDetailFeedbackDismissed>(_onFeedbackDismissed);
   }
 
   final GetUniversityById _getUniversityById;
@@ -41,13 +40,11 @@ class UniversityDetailBloc
     Emitter<UniversityDetailState> emit,
   ) async {
     _universityId = event.universityId;
-    emit(const UniversityDetailState());
+    emit(UniversityDetailLoading());
 
     final universityId = event.universityId;
     if (universityId == null) {
-      emit(
-        const UniversityDetailState(status: UniversityDetailStatus.notFound),
-      );
+      emit(UniversityDetailNotFound());
       return;
     }
 
@@ -60,8 +57,7 @@ class UniversityDetailBloc
         final validation = StudentCount.parse(studentsInput);
 
         emit(
-          UniversityDetailState(
-            status: UniversityDetailStatus.ready,
+          UniversityDetailLoaded(
             university: university,
             imagePath: extras.imagePath,
             studentsInput: studentsInput,
@@ -69,9 +65,7 @@ class UniversityDetailBloc
           ),
         );
       case Err():
-        emit(
-          const UniversityDetailState(status: UniversityDetailStatus.notFound),
-        );
+        emit(UniversityDetailNotFound());
     }
   }
 
@@ -79,9 +73,14 @@ class UniversityDetailBloc
     UniversityStudentsChanged event,
     Emitter<UniversityDetailState> emit,
   ) {
+    final current = state;
+    if (current is! UniversityDetailLoaded) {
+      return;
+    }
+
     final validation = StudentCount.parse(event.value);
     emit(
-      state.copyWith(
+      current.copyWith(
         studentsInput: event.value,
         studentsTouched: true,
         validationError: _validationError(validation),
@@ -104,7 +103,8 @@ class UniversityDetailBloc
     Emitter<UniversityDetailState> emit,
   ) async {
     final universityId = _universityId;
-    if (universityId == null) {
+    final current = state;
+    if (universityId == null || current is! UniversityDetailLoaded) {
       return;
     }
 
@@ -116,14 +116,9 @@ class UniversityDetailBloc
           return;
         }
         _saveUniversityImage(universityId: universityId, imagePath: path);
-        emit(state.copyWith(imagePath: path, clearImageFailedMessage: true));
+        emit(current.copyWith(imagePath: path, clearImageFailure: true));
       case Err(:final error):
-        final notice = switch (error) {
-          PermissionDeniedFailure() => UniversityDetailNotice.permissionDenied,
-          CameraUnavailableFailure() => UniversityDetailNotice.imageFailed,
-          _ => UniversityDetailNotice.imageFailed,
-        };
-        emit(state.copyWith(notice: notice, clearImageFailedMessage: true));
+        emit(current.copyWith(imageFailure: error));
     }
   }
 
@@ -132,33 +127,41 @@ class UniversityDetailBloc
     Emitter<UniversityDetailState> emit,
   ) {
     final universityId = _universityId;
-    if (universityId == null || !state.isFormValid) {
+    final current = state;
+    if (universityId == null || current is! UniversityDetailLoaded) {
+      return;
+    }
+    if (!current.isValid) {
       return;
     }
 
-    final parsed = StudentCount.parse(state.studentsInput);
+    final parsed = StudentCount.parse(current.studentsInput);
     if (parsed case Ok(value: final count)) {
       _saveUniversityStudentCount(
         universityId: universityId,
         studentCount: count,
       );
       emit(
-        state.copyWith(
-          notice: UniversityDetailNotice.saved,
+        current.copyWith(
+          saveStatus: StudentCountSaveStatus.saved,
           clearValidationError: true,
         ),
       );
     }
   }
 
-  void _onNoticeShown(
-    UniversityDetailNoticeShown event,
+  void _onFeedbackDismissed(
+    UniversityDetailFeedbackDismissed event,
     Emitter<UniversityDetailState> emit,
   ) {
+    final current = state;
+    if (current is! UniversityDetailLoaded) {
+      return;
+    }
     emit(
-      state.copyWith(
-        notice: UniversityDetailNotice.none,
-        clearImageFailedMessage: true,
+      current.copyWith(
+        saveStatus: StudentCountSaveStatus.idle,
+        clearImageFailure: true,
       ),
     );
   }

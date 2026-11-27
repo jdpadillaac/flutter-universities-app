@@ -4,6 +4,7 @@ import 'package:universities_app/core/di/injection.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_event.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_detail_app_bar.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_detail_content.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_not_found_view.dart';
@@ -28,25 +29,37 @@ class UniversityDetailPage extends StatelessWidget {
 class UniversityDetailView extends StatelessWidget {
   const UniversityDetailView({super.key});
 
+  static const FailureMessage _failureMessage = FailureMessage();
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return BlocListener<UniversityDetailBloc, UniversityDetailState>(
-      listenWhen: (previous, current) => previous.notice != current.notice,
+      listenWhen: (previous, current) {
+        if (previous is UniversityDetailLoaded &&
+            current is UniversityDetailLoaded) {
+          return previous.saveStatus != current.saveStatus ||
+              previous.imageFailure != current.imageFailure;
+        }
+        return false;
+      },
       listener: (context, state) {
-        final message = switch (state.notice) {
-          UniversityDetailNotice.none => null,
-          UniversityDetailNotice.saved => l10n.savedSuccess,
-          UniversityDetailNotice.permissionDenied => l10n.permissionDenied,
-          UniversityDetailNotice.imageFailed =>
-            state.imageFailedMessage ?? l10n.imagePickFailed,
+        if (state is! UniversityDetailLoaded) {
+          return;
+        }
+        final message = switch (state.saveStatus) {
+          StudentCountSaveStatus.saved => l10n.savedSuccess,
+          StudentCountSaveStatus.idle => switch (state.imageFailure) {
+            final failure? => _failureMessage.resolve(failure, l10n),
+            null => null,
+          },
         };
         if (message != null) {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text(message)));
           context.read<UniversityDetailBloc>().add(
-            const UniversityDetailNoticeShown(),
+            const UniversityDetailFeedbackDismissed(),
           );
         }
       },
@@ -54,18 +67,12 @@ class UniversityDetailView extends StatelessWidget {
         appBar: const UniversityDetailAppBar(),
         body: BlocBuilder<UniversityDetailBloc, UniversityDetailState>(
           builder: (context, state) {
-            return switch (state.status) {
-              UniversityDetailStatus.loading => const Center(
+            return switch (state) {
+              UniversityDetailLoading() => const Center(
                 child: CircularProgressIndicator(),
               ),
-              UniversityDetailStatus.notFound => const UniversityNotFoundView(),
-              UniversityDetailStatus.ready => switch (state.university) {
-                final university? => UniversityDetailContent(
-                  university: university,
-                  state: state,
-                ),
-                null => const SizedBox.shrink(),
-              },
+              UniversityDetailNotFound() => const UniversityNotFoundView(),
+              UniversityDetailLoaded() => UniversityDetailContent(state: state),
             };
           },
         ),
