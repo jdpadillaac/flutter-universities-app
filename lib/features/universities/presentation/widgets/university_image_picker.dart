@@ -61,7 +61,7 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
           children: [
             const Icon(
               Icons.image_outlined,
-              size: AppSizes.imagePickerIcon,
+              size: AppSizes.iconLg,
               color: AppColors.primaryStrong,
             ),
             const SizedBox(height: AppSpacing.md),
@@ -74,7 +74,10 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
                       onPressed: () => context.read<UniversityDetailBloc>().add(
                         const UniversityImagePickRequested(ImageOrigin.camera),
                       ),
-                      icon: const Icon(Icons.photo_camera_outlined, size: 18),
+                      icon: const Icon(
+                        Icons.photo_camera_outlined,
+                        size: AppSizes.iconSm,
+                      ),
                       label: Text(l10n.camera),
                     ),
                   ),
@@ -84,7 +87,10 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
                       onPressed: () => context.read<UniversityDetailBloc>().add(
                         const UniversityImagePickRequested(ImageOrigin.gallery),
                       ),
-                      icon: const Icon(Icons.photo_library_outlined, size: 18),
+                      icon: const Icon(
+                        Icons.photo_library_outlined,
+                        size: AppSizes.iconSm,
+                      ),
                       label: Text(l10n.gallery),
                     ),
                   ),

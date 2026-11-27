@@ -17,7 +17,7 @@ void main() {
       university: university,
       studentsInput: '10',
     );
-      const invalid = UniversityDetailLoaded(university: university);
+    const invalid = UniversityDetailLoaded(university: university);
 
     expect(valid.isValid, isTrue);
     expect(invalid.isValid, isFalse);

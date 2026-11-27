@@ -74,7 +74,7 @@ class LayoutToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = selected ? AppColors.primary : Colors.transparent;
+    final background = selected ? AppColors.primary : AppColors.transparent;
     final iconColor = selected ? AppColors.onPrimary : AppColors.textSecondary;
     return Semantics(
       button: true,
@@ -91,7 +91,7 @@ class LayoutToggleButton extends StatelessWidget {
             child: SizedBox(
               width: AppSizes.layoutToggleButton,
               height: AppSizes.layoutToggleButton,
-              child: Icon(icon, size: 20, color: iconColor),
+              child: Icon(icon, size: AppSizes.iconMd, color: iconColor),
             ),
           ),
         ),

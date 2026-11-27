@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
+import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
 import 'package:universities_app/core/theme/app_typography.dart';
 import 'package:universities_app/features/universities/presentation/bloc/universities_bloc.dart';
@@ -51,7 +52,11 @@ class UniversitiesFailureState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, color: AppColors.icon, size: 40),
+            const Icon(
+              Icons.error_outline,
+              color: AppColors.icon,
+              size: AppSizes.iconXl,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(
               message,

@@ -249,9 +249,7 @@ void main() {
       saveStatus: StudentCountSaveStatus.saved,
     ),
     act: (bloc) => bloc.add(const UniversityDetailFeedbackDismissed()),
-    expect: () => [
-      const UniversityDetailLoaded(university: university),
-    ],
+    expect: () => [const UniversityDetailLoaded(university: university)],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(

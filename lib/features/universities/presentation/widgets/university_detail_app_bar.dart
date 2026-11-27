@@ -23,7 +23,7 @@ class UniversityDetailAppBar extends StatelessWidget
           child: IconButton(
             onPressed: () => context.pop(),
             icon: const Icon(Icons.arrow_back),
-            iconSize: 22,
+            iconSize: AppSizes.appBarIcon,
             constraints: const BoxConstraints(
               minWidth: AppSizes.appBarBackButton,
               minHeight: AppSizes.appBarBackButton,

@@ -104,8 +104,8 @@ class AppTheme {
       ),
       dividerTheme: const DividerThemeData(
         color: AppColors.divider,
-        thickness: 1,
-        space: 1,
+        thickness: AppSizes.dividerThickness,
+        space: AppSizes.dividerThickness,
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: AppColors.primary,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
+import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
 import 'package:universities_app/core/theme/app_typography.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
@@ -28,12 +29,18 @@ class UniversityInfoCard extends StatelessWidget {
                 notAvailable: l10n.notAvailable,
               ),
             ),
-            const Divider(height: 1, color: AppColors.divider),
+            const Divider(
+              height: AppSizes.dividerThickness,
+              color: AppColors.divider,
+            ),
             UniversityInfoRow(
               label: l10n.domainLabel,
               value: UniversityDomainValue(domains: university.domains),
             ),
-            const Divider(height: 1, color: AppColors.divider),
+            const Divider(
+              height: AppSizes.dividerThickness,
+              color: AppColors.divider,
+            ),
             UniversityInfoRow(
               label: l10n.websiteLabel,
               value: UniversityWebsiteValue(

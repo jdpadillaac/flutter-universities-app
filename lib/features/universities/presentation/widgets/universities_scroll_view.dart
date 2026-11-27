@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:universities_app/core/router/app_routes.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
 import 'package:universities_app/core/theme/app_radius.dart';
+import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
+import 'package:universities_app/features/universities/domain/config/universities_list_config.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/presentation/bloc/layout_cubit.dart';
 import 'package:universities_app/features/universities/presentation/bloc/list_layout.dart';
@@ -36,7 +38,8 @@ class UniversitiesScrollView extends StatefulWidget {
 }
 
 class UniversitiesScrollViewState extends State<UniversitiesScrollView> {
-  static const double _loadMoreThreshold = 200;
+  static const double _loadMoreThreshold =
+      UniversitiesListConfig.loadMoreThreshold;
 
   late final ScrollController _scrollController;
 
@@ -127,7 +130,10 @@ class UniversitiesListSliver extends StatelessWidget {
         sliver: SliverList.separated(
           itemCount: items.length,
           separatorBuilder: (context, index) {
-            return const Divider(height: 1, color: AppColors.divider);
+            return const Divider(
+              height: AppSizes.dividerThickness,
+              color: AppColors.divider,
+            );
           },
           itemBuilder: (context, index) {
             final university = items[index];
@@ -167,7 +173,7 @@ class UniversitiesGridSliver extends StatelessWidget {
           crossAxisCount: 2,
           crossAxisSpacing: AppSpacing.md,
           mainAxisSpacing: AppSpacing.md,
-          mainAxisExtent: 168,
+          mainAxisExtent: AppSizes.gridItemExtent,
         ),
         delegate: SliverChildBuilderDelegate((context, index) {
           final university = items[index];
