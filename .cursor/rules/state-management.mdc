@@ -1,10 +1,12 @@
 ---
-description: Estado de presentación todavía sin implementar
+description: Bloc por defecto; Cubit solo para toggles triviales
 alwaysApply: true
 ---
 
 # Estado
 
-`flutter_bloc` está en el `pubspec`. No hay `Bloc` ni `Cubit` en el código.
+Usa `Bloc` con eventos para flujos de presentación. `Cubit` solo para features muy simples (por ejemplo `LayoutCubit`).
 
-La lista y el detalle son `StatelessWidget`. No añadas un gestor de estado hasta que una funcionalidad real lo necesite. Cuando haga falta, usa `flutter_bloc`.
+- Los blocs dependen de casos de uso, no de repositorios ni data sources.
+- Widgets con estado local están permitidos cuando hagan falta controllers (`ScrollController`, `TextEditingController`) con `dispose` correcto.
+- `UniversitiesBloc`, `UniversityThumbnailsBloc` y `UniversityDetailBloc` viven en `presentation/bloc/`.

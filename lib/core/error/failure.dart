@@ -30,3 +30,8 @@ final class UnexpectedFailure extends Failure {
   const UnexpectedFailure({String message = 'An unexpected error occurred.'})
     : super(message);
 }
+
+final class NotFoundFailure extends Failure {
+  const NotFoundFailure({String message = 'University was not found.'})
+    : super(message);
+}

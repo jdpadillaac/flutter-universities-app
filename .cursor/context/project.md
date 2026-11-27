@@ -10,7 +10,7 @@ Cada objeto trae `name`, `country`, `alpha_two_code`, `domains`, `web_pages` y `
 
 ## Stack
 
-Flutter 3.50.1, Dio, oxidized, injectable con GetIt, go_router, freezed y json_serializable solo en el DTO, Equatable en las entidades. `flutter_bloc` e `image_picker` están en el `pubspec` y todavía no se usan. El análisis usa `very_good_analysis`. Los tests y el coverage usan Very Good CLI con mínimo 90%.
+Flutter 3.50.1, Dio, oxidized, injectable con GetIt, go_router, flutter_bloc, freezed y json_serializable solo en el DTO, Equatable en las entidades, `image_picker` detrás de `ImagePickerService`. El análisis usa `very_good_analysis`. Los tests y el coverage usan Very Good CLI con mínimo 90%.
 
 ## Decisiones
 

@@ -1,9 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:universities_app/core/network/api_config.dart';
 import 'package:universities_app/core/router/app_routes.dart';
-import 'package:universities_app/features/universities/presentation/pages/universities_list_page.dart';
+import 'package:universities_app/features/universities/presentation/pages/universities_page.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail_page.dart';
 
 @module
@@ -26,7 +27,7 @@ abstract class RegisterModule {
       GoRoute(
         path: AppRoutes.list,
         name: AppRoutes.list,
-        builder: (context, state) => const UniversitiesListPage(),
+        builder: (context, state) => const UniversitiesPage(),
         routes: [
           GoRoute(
             path: 'universities/:id',
@@ -40,4 +41,7 @@ abstract class RegisterModule {
       ),
     ],
   );
+
+  @lazySingleton
+  ImagePicker get imagePicker => ImagePicker();
 }

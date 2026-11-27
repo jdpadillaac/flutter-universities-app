@@ -69,4 +69,25 @@ void main() {
     expect(entity.id, 'empty-domains--');
     verify(() => ids.buildId('Empty Domains', '')).called(1);
   });
+
+  test('builds a stable id for the same dto input', () {
+    when(() => decoder.decode('Stable')).thenReturn('Stable');
+    when(
+      () => ids.buildId('Stable', 'stable.edu'),
+    ).thenReturn('stable--stable-edu');
+
+    const dto = UniversityDto(
+      name: 'Stable',
+      country: 'Country',
+      countryCode: 'CO',
+      domains: ['stable.edu'],
+      webPages: ['https://stable.edu'],
+    );
+
+    final first = mapper.map(dto);
+    final second = mapper.map(dto);
+
+    expect(first.id, second.id);
+    verify(() => ids.buildId('Stable', 'stable.edu')).called(2);
+  });
 }

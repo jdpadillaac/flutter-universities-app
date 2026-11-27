@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:injectable/injectable.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universities_app/core/error/failure.dart';
-import 'package:universities_app/features/universities/domain/entities/universities_page.dart';
+import 'package:universities_app/features/universities/domain/entities/universities_slice_entity.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/repositories/universities_repository.dart';
 
@@ -13,7 +13,7 @@ class GetUniversitiesPage {
 
   final UniversitiesRepository _repository;
 
-  Future<Result<UniversitiesPage, Failure>> call({
+  Future<Result<UniversitiesSliceEntity, Failure>> call({
     required int page,
     int pageSize = 20,
   }) async {
@@ -28,7 +28,7 @@ class GetUniversitiesPage {
     return result.map((universities) => _slice(universities, page, pageSize));
   }
 
-  UniversitiesPage _slice(
+  UniversitiesSliceEntity _slice(
     List<University> universities,
     int page,
     int pageSize,
@@ -36,11 +36,11 @@ class GetUniversitiesPage {
     final total = universities.length;
     final start = page * pageSize;
     if (start >= total) {
-      return const UniversitiesPage(items: [], hasReachedMax: true);
+      return const UniversitiesSliceEntity(items: [], hasReachedMax: true);
     }
 
     final end = min(start + pageSize, total);
-    return UniversitiesPage(
+    return UniversitiesSliceEntity(
       items: universities.sublist(start, end),
       hasReachedMax: end >= total,
     );

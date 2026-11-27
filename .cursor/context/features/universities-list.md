@@ -1,5 +1,7 @@
 # Lista de universidades
 
-`UniversitiesListPage` usa `UniversitiesBloc` y `LayoutCubit`. Carga la página 0 al abrir, pide más páginas al llegar al final del scroll y permite alternar lista y grid desde el `AppBar`.
+`UniversitiesPage` usa `UniversitiesBloc`, `LayoutCubit` y `UniversityThumbnailsBloc`. Carga la página 0 al abrir, scroll infinito con `ScrollController` (~200 px antes del final) y alterna lista/grid desde el `AppBar`.
 
-Cada ítem abre el detalle con el id de la universidad. Si falla una carga inicial, muestra error y Retry. Si falla un append, conserva los ítems y muestra el error abajo con Retry.
+Switch exhaustivo sobre `UniversitiesState`: loading, failure vacío con Reintentar, failure con ítems, vacío y cargado con footer de carga.
+
+Ítems reutilizables: `UniversityListTile` y `UniversityGridCard` con miniatura desde extras de sesión. Tap navega con `go_router` al detalle por id.
