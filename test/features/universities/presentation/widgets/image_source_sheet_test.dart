@@ -7,11 +7,11 @@ import 'package:universities_app/l10n/generated/app_localizations.dart';
 void main() {
   testWidgets('shows camera and gallery options', (tester) async {
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('es'),
+      const MaterialApp(
+        locale: Locale('es'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const Scaffold(body: ImageSourceSheet()),
+        home: Scaffold(body: ImageSourceSheet()),
       ),
     );
 
