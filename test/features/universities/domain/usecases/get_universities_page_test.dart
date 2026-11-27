@@ -48,7 +48,7 @@ void main() {
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
 
-    final result = await useCase(page: 1);
+    final result = await useCase(page: 0);
 
     expect(
       result.unwrap(),
@@ -62,7 +62,7 @@ void main() {
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
 
-    final result = await useCase(page: 3, pageSize: 2);
+    final result = await useCase(page: 2, pageSize: 2);
 
     expect(
       result.unwrap(),
@@ -76,7 +76,7 @@ void main() {
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
 
-    final result = await useCase(page: 1, pageSize: 2);
+    final result = await useCase(page: 0, pageSize: 2);
 
     expect(
       result.unwrap(),
@@ -90,7 +90,7 @@ void main() {
       repository.getUniversities,
     ).thenAnswer((_) async => Ok<List<University>, Failure>(universities));
 
-    final result = await useCase(page: 4, pageSize: 2);
+    final result = await useCase(page: 3, pageSize: 2);
 
     expect(
       result.unwrap(),
@@ -104,17 +104,17 @@ void main() {
       repository.getUniversities,
     ).thenAnswer((_) async => const Err<List<University>, Failure>(failure));
 
-    final result = await useCase(page: 1);
+    final result = await useCase(page: 0);
 
     expect(result.unwrapErr(), failure);
   });
 
-  test('returns UnexpectedFailure when page is below 1', () async {
-    final result = await useCase(page: 0);
+  test('returns UnexpectedFailure when page is below 0', () async {
+    final result = await useCase(page: -1);
 
     expect(
       result.unwrapErr(),
-      const UnexpectedFailure(message: 'page must be >= 1'),
+      const UnexpectedFailure(message: 'page must be >= 0'),
     );
     verifyNever(repository.getUniversities);
   });
