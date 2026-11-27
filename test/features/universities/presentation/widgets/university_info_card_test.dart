@@ -19,8 +19,8 @@ void main() {
     );
 
     await tester.pumpWidget(
-      LocalizedMaterialApp(
-        child: const Scaffold(body: UniversityInfoCard(university: university)),
+      const LocalizedMaterialApp(
+        child: Scaffold(body: UniversityInfoCard(university: university)),
       ),
     );
 
