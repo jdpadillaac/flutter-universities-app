@@ -7,6 +7,7 @@ import 'package:universities_app/features/universities/domain/value_objects/stud
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail_page.dart';
+import '../../../../support/localized_material_app.dart';
 
 class MockUniversityDetailBloc extends Mock implements UniversityDetailBloc {}
 
@@ -43,28 +44,30 @@ void main() {
 
   Widget buildHarness(UniversityDetailState state) {
     when(() => bloc.state).thenReturn(state);
-    return MaterialApp(
-      home: BlocProvider<UniversityDetailBloc>.value(
+    return LocalizedMaterialApp(
+      child: BlocProvider<UniversityDetailBloc>.value(
         value: bloc,
         child: const UniversityDetailView(),
       ),
     );
   }
 
-  testWidgets('shows No disponible when state province is missing', (
-    tester,
-  ) async {
-    await tester.pumpWidget(
-      buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
-          university: university,
+  testWidgets(
+    'shows country chip and No disponible when state province is missing',
+    (tester) async {
+      await tester.pumpWidget(
+        buildHarness(
+          const UniversityDetailState(
+            status: UniversityDetailStatus.ready,
+            university: university,
+          ),
         ),
-      ),
-    );
+      );
 
-    expect(find.textContaining('No disponible'), findsOneWidget);
-  });
+      expect(find.text('CO · Colombia'), findsOneWidget);
+      expect(find.textContaining('No disponible'), findsOneWidget);
+    },
+  );
 
   testWidgets('does not show validation error before interaction', (
     tester,
@@ -82,7 +85,9 @@ void main() {
     expect(find.text('El valor debe ser mayor que cero.'), findsNothing);
   });
 
-  testWidgets('opens image source bottom sheet', (tester) async {
+  testWidgets('shows camera and gallery actions on image placeholder', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       buildHarness(
         const UniversityDetailState(
@@ -91,9 +96,6 @@ void main() {
         ),
       ),
     );
-
-    await tester.tap(find.byType(InkWell).first);
-    await tester.pumpAndSettle();
 
     expect(find.text('Cámara'), findsOneWidget);
     expect(find.text('Galería'), findsOneWidget);
@@ -115,7 +117,27 @@ void main() {
     );
 
     expect(find.text('El valor debe ser mayor que cero.'), findsOneWidget);
-    final button = tester.widget<FilledButton>(find.byType(FilledButton));
+    final button = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Guardar'),
+    );
     expect(button.onPressed, isNull);
+  });
+
+  testWidgets('enables save with valid student count', (tester) async {
+    await tester.pumpWidget(
+      buildHarness(
+        const UniversityDetailState(
+          status: UniversityDetailStatus.ready,
+          university: university,
+          studentsInput: '42',
+          studentsTouched: true,
+        ),
+      ),
+    );
+
+    final saveButton = tester.widget<FilledButton>(
+      find.widgetWithText(FilledButton, 'Guardar'),
+    );
+    expect(saveButton.onPressed, isNotNull);
   });
 }

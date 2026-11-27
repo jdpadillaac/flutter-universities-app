@@ -20,6 +20,7 @@ import 'package:universities_app/core/media/image_picker_service.dart' as _i927;
 import 'package:universities_app/core/media/image_picker_service_impl.dart'
     as _i155;
 import 'package:universities_app/core/network/api_client.dart' as _i304;
+import 'package:universities_app/core/theme/app_theme.dart' as _i321;
 import 'package:universities_app/core/utils/html_entity_decoder.dart' as _i265;
 import 'package:universities_app/features/universities/data/datasources/remote/universities_json_parser.dart'
     as _i127;
@@ -57,6 +58,8 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
     as _i144;
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart'
     as _i690;
+import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart'
+    as _i1019;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -70,9 +73,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i583.GoRouter>(() => registerModule.goRouter);
     gh.lazySingleton<_i183.ImagePicker>(() => registerModule.imagePicker);
+    gh.lazySingleton<_i321.AppTheme>(() => const _i321.AppTheme());
     gh.lazySingleton<_i265.HtmlEntityDecoder>(() => _i265.HtmlEntityDecoder());
     gh.lazySingleton<_i129.UniversityIdGenerator>(
       () => const _i129.UniversityIdGenerator(),
+    );
+    gh.lazySingleton<_i1019.UniversityInitialsResolver>(
+      () => const _i1019.UniversityInitialsResolver(),
     );
     gh.lazySingleton<_i814.UniversityExtrasRepository>(
       () => _i759.UniversityExtrasRepositoryImpl(),

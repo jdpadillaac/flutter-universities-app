@@ -24,6 +24,13 @@ fi
 
 export PATH="${PATH}:${HOME}/.pub-cache/bin"
 
+if ! format_output="$(dart format --set-exit-if-changed . 2>&1)"; then
+  jq -n --arg details "$format_output" '{
+    followup_message: ("El formato no está al día. Ejecuta `dart format .` y vuelve a commitear.\n\n" + $details)
+  }'
+  exit 0
+fi
+
 if ! output="$(very_good test --coverage --min-coverage 90 2>&1)"; then
   jq -n --arg details "$output" '{
     followup_message: ("La compuerta de coverage falló. Corrige los tests o sube el coverage global al menos a 90%.\n\n" + $details)

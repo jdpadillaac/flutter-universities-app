@@ -9,5 +9,5 @@ El coverage mínimo es 90%. El comando es `very_good test --coverage --min-cover
 
 - `very_good.yaml` guarda ese umbral y excluye `**/*.g.dart`, `**/*.freezed.dart`, `**/*.config.dart` y `lib/main.dart`.
 - CI activa `very_good_cli` y corre `very_good packages get`, `build_runner`, `dart format --set-exit-if-changed .`, `flutter analyze` y `very_good test`.
-- El hook `stop` llama a `very_good test` con el mismo umbral. No existe `tool/coverage.sh`.
+- El hook `stop` corre `dart format --set-exit-if-changed .` y después `very_good test` con el mismo umbral. No existe `tool/coverage.sh`.
 - No hay plataforma web. `image_picker` sigue en el `pubspec`.
