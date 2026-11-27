@@ -18,17 +18,38 @@ class ImageSourceSheet extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ListTile(
-          leading: const Icon(Icons.photo_camera_outlined),
-          title: Text(l10n.camera),
-          onTap: () => Navigator.of(context).pop(ImageOrigin.camera),
+        _ImageSourceOption(
+          icon: Icons.photo_camera_outlined,
+          label: l10n.camera,
+          origin: ImageOrigin.camera,
         ),
-        ListTile(
-          leading: const Icon(Icons.photo_library_outlined),
-          title: Text(l10n.gallery),
-          onTap: () => Navigator.of(context).pop(ImageOrigin.gallery),
+        _ImageSourceOption(
+          icon: Icons.photo_library_outlined,
+          label: l10n.gallery,
+          origin: ImageOrigin.gallery,
         ),
       ],
+    );
+  }
+}
+
+class _ImageSourceOption extends StatelessWidget {
+  const _ImageSourceOption({
+    required this.icon,
+    required this.label,
+    required this.origin,
+  });
+
+  final IconData icon;
+  final String label;
+  final ImageOrigin origin;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(label),
+      onTap: () => Navigator.of(context).pop(origin),
     );
   }
 }

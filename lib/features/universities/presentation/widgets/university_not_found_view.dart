@@ -10,32 +10,49 @@ class UniversityNotFoundView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Center(
+    return const Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              l10n.universityNotFound,
-              style: AppTypography.body,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            FilledButton(
-              onPressed: () {
-                if (context.canPop()) {
-                  context.pop();
-                } else {
-                  context.go(AppRoutes.list);
-                }
-              },
-              child: Text(l10n.backToList),
-            ),
+            _UniversityNotFoundMessage(),
+            SizedBox(height: AppSpacing.lg),
+            _BackToListButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UniversityNotFoundMessage extends StatelessWidget {
+  const _UniversityNotFoundMessage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      AppLocalizations.of(context).universityNotFound,
+      style: AppTypography.body,
+      textAlign: TextAlign.center,
+    );
+  }
+}
+
+class _BackToListButton extends StatelessWidget {
+  const _BackToListButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: () {
+        if (context.canPop()) {
+          context.pop();
+        } else {
+          context.go(AppRoutes.list);
+        }
+      },
+      child: Text(AppLocalizations.of(context).backToList),
     );
   }
 }

@@ -10,36 +10,40 @@ class UniversitiesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return DecoratedBox(
-      decoration: const BoxDecoration(
+    return const DecoratedBox(
+      decoration: BoxDecoration(
         color: AppColors.surface,
         border: Border(bottom: BorderSide(color: AppColors.border)),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(
+        padding: EdgeInsets.symmetric(
           horizontal: AppSpacing.xl,
           vertical: AppSpacing.lg,
         ),
         child: Row(
           children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(l10n.unitedStatesCaption, style: AppTypography.caption),
-                  const SizedBox(height: AppSpacing.xs),
-                  Text(
-                    l10n.universitiesTitle,
-                    style: AppTypography.screenTitle,
-                  ),
-                ],
-              ),
-            ),
-            const LayoutToggle(),
+            Expanded(child: _UniversitiesHeaderTitle()),
+            LayoutToggle(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UniversitiesHeaderTitle extends StatelessWidget {
+  const _UniversitiesHeaderTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(l10n.unitedStatesCaption, style: AppTypography.caption),
+        const SizedBox(height: AppSpacing.xs),
+        Text(l10n.universitiesTitle, style: AppTypography.screenTitle),
+      ],
     );
   }
 }

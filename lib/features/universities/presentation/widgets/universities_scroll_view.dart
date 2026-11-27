@@ -75,29 +75,51 @@ class UniversitiesScrollViewState extends State<UniversitiesScrollView> {
 
   @override
   Widget build(BuildContext context) {
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        _UniversitiesLayoutSliver(
+          items: widget.items,
+          imagePaths: widget.imagePaths,
+          initialsResolver: widget.initialsResolver,
+          onOpenDetail: _openDetail,
+        ),
+        if (widget.showLoadMore)
+          const SliverToBoxAdapter(child: LoadMoreIndicator()),
+      ],
+    );
+  }
+}
+
+class _UniversitiesLayoutSliver extends StatelessWidget {
+  const _UniversitiesLayoutSliver({
+    required this.items,
+    required this.imagePaths,
+    required this.initialsResolver,
+    required this.onOpenDetail,
+  });
+
+  final List<University> items;
+  final Map<String, String> imagePaths;
+  final UniversityInitialsResolver initialsResolver;
+  final void Function(University university) onOpenDetail;
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<LayoutCubit, ListLayout>(
-      builder: (context, layout) {
-        return CustomScrollView(
-          controller: _scrollController,
-          slivers: [
-            switch (layout) {
-              ListLayout.list => UniversitiesListSliver(
-                items: widget.items,
-                imagePaths: widget.imagePaths,
-                initialsResolver: widget.initialsResolver,
-                onOpenDetail: _openDetail,
-              ),
-              ListLayout.grid => UniversitiesGridSliver(
-                items: widget.items,
-                imagePaths: widget.imagePaths,
-                initialsResolver: widget.initialsResolver,
-                onOpenDetail: _openDetail,
-              ),
-            },
-            if (widget.showLoadMore)
-              const SliverToBoxAdapter(child: LoadMoreIndicator()),
-          ],
-        );
+      builder: (context, layout) => switch (layout) {
+        ListLayout.list => UniversitiesListSliver(
+          items: items,
+          imagePaths: imagePaths,
+          initialsResolver: initialsResolver,
+          onOpenDetail: onOpenDetail,
+        ),
+        ListLayout.grid => UniversitiesGridSliver(
+          items: items,
+          imagePaths: imagePaths,
+          initialsResolver: initialsResolver,
+          onOpenDetail: onOpenDetail,
+        ),
       },
     );
   }
@@ -129,23 +151,28 @@ class UniversitiesListSliver extends StatelessWidget {
         ),
         sliver: SliverList.separated(
           itemCount: items.length,
-          separatorBuilder: (context, index) {
-            return const Divider(
-              height: AppSizes.dividerThickness,
-              color: AppColors.divider,
-            );
-          },
-          itemBuilder: (context, index) {
-            final university = items[index];
-            return UniversityListTile(
-              university: university,
-              imagePath: imagePaths[university.id],
-              initials: initialsResolver.resolve(university.name),
-              onTap: () => onOpenDetail(university),
-            );
-          },
+          separatorBuilder: (context, index) =>
+              const _UniversitiesListDivider(),
+          itemBuilder: (context, index) => UniversityListTile(
+            university: items[index],
+            imagePath: imagePaths[items[index].id],
+            initials: initialsResolver.resolve(items[index].name),
+            onTap: () => onOpenDetail(items[index]),
+          ),
         ),
       ),
+    );
+  }
+}
+
+class _UniversitiesListDivider extends StatelessWidget {
+  const _UniversitiesListDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Divider(
+      height: AppSizes.dividerThickness,
+      color: AppColors.divider,
     );
   }
 }
@@ -175,15 +202,15 @@ class UniversitiesGridSliver extends StatelessWidget {
           mainAxisSpacing: AppSpacing.md,
           mainAxisExtent: AppSizes.gridItemExtent,
         ),
-        delegate: SliverChildBuilderDelegate((context, index) {
-          final university = items[index];
-          return UniversityGridCard(
-            university: university,
-            imagePath: imagePaths[university.id],
-            initials: initialsResolver.resolve(university.name),
-            onTap: () => onOpenDetail(university),
-          );
-        }, childCount: items.length),
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => UniversityGridCard(
+            university: items[index],
+            imagePath: imagePaths[items[index].id],
+            initials: initialsResolver.resolve(items[index].name),
+            onTap: () => onOpenDetail(items[index]),
+          ),
+          childCount: items.length,
+        ),
       ),
     );
   }

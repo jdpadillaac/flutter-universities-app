@@ -48,31 +48,21 @@ class UniversitiesFailureState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final message = failureMessageResolver.resolve(failure, l10n);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.error_outline,
-              color: AppColors.icon,
-              size: AppSizes.iconXl,
-            ),
+            const _UniversitiesFailureIcon(),
             const SizedBox(height: AppSpacing.md),
             Text(
-              message,
+              failureMessageResolver.resolve(failure, l10n),
               style: AppTypography.body,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.lg),
-            FilledButton(
-              onPressed: () => context.read<UniversitiesBloc>().add(
-                const UniversitiesRetryRequested(),
-              ),
-              child: Text(l10n.retry),
-            ),
+            const _UniversitiesRetryButton(),
           ],
         ),
       ),
@@ -93,7 +83,6 @@ class UniversitiesInlineFailureBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final message = failureMessageResolver.resolve(failure, l10n);
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: AppColors.surface,
@@ -103,16 +92,57 @@ class UniversitiesInlineFailureBanner extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
-            Expanded(child: Text(message, style: AppTypography.caption)),
-            TextButton(
-              onPressed: () => context.read<UniversitiesBloc>().add(
-                const UniversitiesRetryRequested(),
+            Expanded(
+              child: Text(
+                failureMessageResolver.resolve(failure, l10n),
+                style: AppTypography.caption,
               ),
-              child: Text(l10n.retry),
             ),
+            const _UniversitiesInlineRetryButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UniversitiesFailureIcon extends StatelessWidget {
+  const _UniversitiesFailureIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(
+      Icons.error_outline,
+      color: AppColors.icon,
+      size: AppSizes.iconXl,
+    );
+  }
+}
+
+class _UniversitiesRetryButton extends StatelessWidget {
+  const _UniversitiesRetryButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: () => context.read<UniversitiesBloc>().add(
+        const UniversitiesRetryRequested(),
+      ),
+      child: Text(AppLocalizations.of(context).retry),
+    );
+  }
+}
+
+class _UniversitiesInlineRetryButton extends StatelessWidget {
+  const _UniversitiesInlineRetryButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => context.read<UniversitiesBloc>().add(
+        const UniversitiesRetryRequested(),
+      ),
+      child: Text(AppLocalizations.of(context).retry),
     );
   }
 }

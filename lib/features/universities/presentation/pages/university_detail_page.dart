@@ -35,50 +35,96 @@ class UniversityDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return BlocListener<UniversityDetailBloc, UniversityDetailState>(
-      listenWhen: (previous, current) {
-        if (previous is UniversityDetailLoaded &&
-            current is UniversityDetailLoaded) {
-          return previous.saveStatus != current.saveStatus ||
-              previous.imageFailure != current.imageFailure;
-        }
-        return false;
-      },
-      listener: (context, state) {
-        if (state is! UniversityDetailLoaded) {
-          return;
-        }
-        final message = switch (state.saveStatus) {
-          StudentCountSaveStatus.saved => l10n.savedSuccess,
-          StudentCountSaveStatus.idle => switch (state.imageFailure) {
-            final failure? => failureMessageResolver.resolve(failure, l10n),
-            null => null,
-          },
-        };
-        if (message != null) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(message)));
-          context.read<UniversityDetailBloc>().add(
-            const UniversityDetailFeedbackDismissed(),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: const UniversityDetailAppBar(),
-        body: BlocBuilder<UniversityDetailBloc, UniversityDetailState>(
-          builder: (context, state) {
-            return switch (state) {
-              UniversityDetailLoading() => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              UniversityDetailNotFound() => const UniversityNotFoundView(),
-              UniversityDetailLoaded() => UniversityDetailContent(state: state),
-            };
-          },
-        ),
+    return _UniversityDetailFeedbackListener(
+      failureMessageResolver: failureMessageResolver,
+      child: const Scaffold(
+        appBar: UniversityDetailAppBar(),
+        body: _UniversityDetailBody(),
       ),
     );
+  }
+}
+
+class _UniversityDetailFeedbackListener extends StatelessWidget {
+  const _UniversityDetailFeedbackListener({
+    required this.failureMessageResolver,
+    required this.child,
+  });
+
+  final FailureMessageResolver failureMessageResolver;
+  final Widget child;
+
+  bool _shouldListen(
+    UniversityDetailState previous,
+    UniversityDetailState current,
+  ) {
+    if (previous is UniversityDetailLoaded &&
+        current is UniversityDetailLoaded) {
+      return previous.saveStatus != current.saveStatus ||
+          previous.imageFailure != current.imageFailure;
+    }
+    return false;
+  }
+
+  String? _feedbackMessage(
+    UniversityDetailLoaded state,
+    AppLocalizations l10n,
+  ) {
+    return switch (state.saveStatus) {
+      StudentCountSaveStatus.saved => l10n.savedSuccess,
+      StudentCountSaveStatus.idle => switch (state.imageFailure) {
+        final failure? => failureMessageResolver.resolve(failure, l10n),
+        null => null,
+      },
+    };
+  }
+
+  void _showFeedback(BuildContext context, UniversityDetailState state) {
+    if (state is! UniversityDetailLoaded) {
+      return;
+    }
+    final message = _feedbackMessage(state, AppLocalizations.of(context));
+    if (message == null) {
+      return;
+    }
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+    context.read<UniversityDetailBloc>().add(
+      const UniversityDetailFeedbackDismissed(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<UniversityDetailBloc, UniversityDetailState>(
+      listenWhen: _shouldListen,
+      listener: _showFeedback,
+      child: child,
+    );
+  }
+}
+
+class _UniversityDetailBody extends StatelessWidget {
+  const _UniversityDetailBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UniversityDetailBloc, UniversityDetailState>(
+      builder: (context, state) => switch (state) {
+        UniversityDetailLoading() => const _UniversityDetailLoadingView(),
+        UniversityDetailNotFound() => const UniversityNotFoundView(),
+        UniversityDetailLoaded() => UniversityDetailContent(state: state),
+      },
+    );
+  }
+}
+
+class _UniversityDetailLoadingView extends StatelessWidget {
+  const _UniversityDetailLoadingView();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: CircularProgressIndicator());
   }
 }

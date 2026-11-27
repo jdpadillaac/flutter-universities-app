@@ -13,44 +13,72 @@ class LayoutToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return BlocBuilder<LayoutCubit, ListLayout>(
-      builder: (context, layout) {
-        return Container(
-          padding: const EdgeInsets.all(AppSpacing.xs),
-          decoration: BoxDecoration(
-            color: AppColors.segmentedBackground,
-            borderRadius: BorderRadius.circular(AppRadius.control),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LayoutToggleButton(
-                icon: Icons.view_list,
-                selected: layout == ListLayout.list,
-                tooltip: l10n.viewAsList,
-                semanticLabel: l10n.viewAsList,
-                onPressed: () {
-                  if (layout != ListLayout.list) {
-                    context.read<LayoutCubit>().toggle();
-                  }
-                },
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              LayoutToggleButton(
-                icon: Icons.grid_view,
-                selected: layout == ListLayout.grid,
-                tooltip: l10n.viewAsGrid,
-                semanticLabel: l10n.viewAsGrid,
-                onPressed: () {
-                  if (layout != ListLayout.grid) {
-                    context.read<LayoutCubit>().toggle();
-                  }
-                },
-              ),
-            ],
-          ),
-        );
+      builder: (context, layout) => _LayoutToggleSegments(layout: layout),
+    );
+  }
+}
+
+class _LayoutToggleSegments extends StatelessWidget {
+  const _LayoutToggleSegments({required this.layout});
+
+  final ListLayout layout;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Material(
+      color: AppColors.segmentedBackground,
+      borderRadius: BorderRadius.circular(AppRadius.control),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xs),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _LayoutToggleOption(
+              target: ListLayout.list,
+              current: layout,
+              icon: Icons.view_list,
+              label: l10n.viewAsList,
+            ),
+            const SizedBox(width: AppSpacing.xs),
+            _LayoutToggleOption(
+              target: ListLayout.grid,
+              current: layout,
+              icon: Icons.grid_view,
+              label: l10n.viewAsGrid,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LayoutToggleOption extends StatelessWidget {
+  const _LayoutToggleOption({
+    required this.target,
+    required this.current,
+    required this.icon,
+    required this.label,
+  });
+
+  final ListLayout target;
+  final ListLayout current;
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutToggleButton(
+      icon: icon,
+      selected: current == target,
+      tooltip: label,
+      semanticLabel: label,
+      onPressed: () {
+        if (current != target) {
+          context.read<LayoutCubit>().toggle();
+        }
       },
     );
   }
@@ -74,24 +102,29 @@ class LayoutToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final background = selected ? AppColors.primary : AppColors.transparent;
-    final iconColor = selected ? AppColors.onPrimary : AppColors.textSecondary;
+    final borderRadius = BorderRadius.circular(AppRadius.segmentedItem);
     return Semantics(
       button: true,
       label: semanticLabel,
       selected: selected,
       child: Tooltip(
         message: tooltip,
-        child: Material(
-          color: background,
-          borderRadius: BorderRadius.circular(AppRadius.segmentedItem),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: selected ? AppColors.primary : AppColors.transparent,
+            borderRadius: borderRadius,
+          ),
           child: InkWell(
             onTap: onPressed,
-            borderRadius: BorderRadius.circular(AppRadius.segmentedItem),
+            borderRadius: borderRadius,
             child: SizedBox(
               width: AppSizes.layoutToggleButton,
               height: AppSizes.layoutToggleButton,
-              child: Icon(icon, size: AppSizes.iconMd, color: iconColor),
+              child: Icon(
+                icon,
+                size: AppSizes.iconMd,
+                color: selected ? AppColors.onPrimary : AppColors.textSecondary,
+              ),
             ),
           ),
         ),
