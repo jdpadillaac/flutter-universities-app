@@ -69,14 +69,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get universityNotFound => 'No se encontró la universidad.';
 
   @override
+  String get backToList => 'Volver a la lista';
+
+  @override
   String get savedSuccess => 'Guardado correctamente.';
-
-  @override
-  String get permissionDenied =>
-      'Se denegó el permiso para usar la cámara o la galería.';
-
-  @override
-  String get imagePickFailed => 'No se pudo seleccionar la imagen.';
 
   @override
   String get studentCountEmpty => 'Ingresa un número de estudiantes.';
@@ -101,4 +97,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get failureNotFound => 'No se encontró la universidad.';
+
+  @override
+  String get failurePermissionDenied =>
+      'Se denegó el permiso para usar la cámara o la galería.';
+
+  @override
+  String get failureCameraUnavailable =>
+      'La cámara no está disponible en este dispositivo.';
 }

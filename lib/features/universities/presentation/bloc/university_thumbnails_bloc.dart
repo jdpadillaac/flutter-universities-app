@@ -9,7 +9,7 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
 class UniversityThumbnailsBloc
     extends Bloc<UniversityThumbnailsEvent, UniversityThumbnailsState> {
   UniversityThumbnailsBloc(this._watchUniversityExtras)
-    : super(const UniversityThumbnailsState()) {
+    : super(UniversityThumbnailsInitial()) {
     on<UniversityThumbnailsSubscriptionRequested>(_onSubscriptionRequested);
   }
 
@@ -29,7 +29,7 @@ class UniversityThumbnailsBloc
             imagePaths[entry.key] = path;
           }
         }
-        return UniversityThumbnailsState(imagePaths: imagePaths);
+        return UniversityThumbnailsLoaded(imagePaths: imagePaths);
       },
     );
   }

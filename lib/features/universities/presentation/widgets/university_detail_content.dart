@@ -11,11 +11,11 @@ import 'package:universities_app/features/universities/presentation/widgets/univ
 class UniversityDetailContent extends StatelessWidget {
   const UniversityDetailContent({required this.state, super.key});
 
-  final UniversityDetailState state;
+  final UniversityDetailLoaded state;
 
   @override
   Widget build(BuildContext context) {
-    final university = state.university!;
+    final university = state.university;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
@@ -23,7 +23,7 @@ class UniversityDetailContent extends StatelessWidget {
         children: [
           UniversityImagePicker(imagePath: state.imagePath),
           const SizedBox(height: AppSizes.detailContentGap),
-          Text(university.name, style: AppTypography.detailTitle),
+          _UniversityDetailTitle(name: university.name),
           const SizedBox(height: AppSpacing.sm),
           UniversityCountryChip(
             countryCode: university.countryCode,
@@ -36,5 +36,16 @@ class UniversityDetailContent extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _UniversityDetailTitle extends StatelessWidget {
+  const _UniversityDetailTitle({required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(name, style: AppTypography.detailTitle);
   }
 }

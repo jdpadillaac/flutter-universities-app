@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oxidized/oxidized.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
+import 'package:universities_app/features/universities/domain/usecases/pick_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
@@ -18,20 +18,20 @@ class UniversityDetailBloc
     this._getUniversityExtras,
     this._saveUniversityImage,
     this._saveUniversityStudentCount,
-    this._imagePickerService,
-  ) : super(const UniversityDetailState()) {
+    this._pickUniversityImage,
+  ) : super(UniversityDetailLoading()) {
     on<UniversityDetailRequested>(_onDetailRequested);
     on<UniversityStudentsChanged>(_onStudentsChanged);
     on<UniversityImagePickRequested>(_onImagePickRequested);
     on<UniversityStudentsSaveRequested>(_onStudentsSaveRequested);
-    on<UniversityDetailNoticeShown>(_onNoticeShown);
+    on<UniversityDetailFeedbackDismissed>(_onFeedbackDismissed);
   }
 
   final GetUniversityById _getUniversityById;
   final GetUniversityExtras _getUniversityExtras;
   final SaveUniversityImage _saveUniversityImage;
   final SaveUniversityStudentCount _saveUniversityStudentCount;
-  final ImagePickerService _imagePickerService;
+  final PickUniversityImage _pickUniversityImage;
 
   String? _universityId;
 
@@ -40,29 +40,32 @@ class UniversityDetailBloc
     Emitter<UniversityDetailState> emit,
   ) async {
     _universityId = event.universityId;
-    emit(const UniversityDetailState());
+    emit(UniversityDetailLoading());
 
-    final result = await _getUniversityById(event.universityId);
+    final universityId = event.universityId;
+    if (universityId == null) {
+      emit(UniversityDetailNotFound());
+      return;
+    }
+
+    final result = await _getUniversityById(universityId);
 
     switch (result) {
       case Ok(value: final university):
-        final extras = _getUniversityExtras(event.universityId);
+        final extras = _getUniversityExtras(universityId);
         final studentsInput = extras.studentCount?.value.toString() ?? '';
         final validation = StudentCount.parse(studentsInput);
 
         emit(
-          UniversityDetailState(
-            status: UniversityDetailStatus.ready,
+          UniversityDetailLoaded(
             university: university,
             imagePath: extras.imagePath,
             studentsInput: studentsInput,
-            validationError: validation.isErr() ? validation.unwrapErr() : null,
+            validationError: _validationError(validation),
           ),
         );
       case Err():
-        emit(
-          const UniversityDetailState(status: UniversityDetailStatus.notFound),
-        );
+        emit(UniversityDetailNotFound());
     }
   }
 
@@ -70,15 +73,29 @@ class UniversityDetailBloc
     UniversityStudentsChanged event,
     Emitter<UniversityDetailState> emit,
   ) {
+    final current = state;
+    if (current is! UniversityDetailLoaded) {
+      return;
+    }
+
     final validation = StudentCount.parse(event.value);
     emit(
-      state.copyWith(
+      current.copyWith(
         studentsInput: event.value,
         studentsTouched: true,
-        validationError: validation.isErr() ? validation.unwrapErr() : null,
+        validationError: _validationError(validation),
         clearValidationError: validation.isOk(),
       ),
     );
+  }
+
+  StudentCountError? _validationError(
+    Result<StudentCount, StudentCountError> validation,
+  ) {
+    return switch (validation) {
+      Ok() => null,
+      Err(:final error) => error,
+    };
   }
 
   Future<void> _onImagePickRequested(
@@ -86,32 +103,22 @@ class UniversityDetailBloc
     Emitter<UniversityDetailState> emit,
   ) async {
     final universityId = _universityId;
-    if (universityId == null) {
+    final current = state;
+    if (universityId == null || current is! UniversityDetailLoaded) {
       return;
     }
 
-    final result = await _imagePickerService.pick(event.source);
+    final result = await _pickUniversityImage(event.origin);
 
     switch (result) {
-      case ImagePicked(:final path):
+      case Ok(value: final path):
+        if (path == null) {
+          return;
+        }
         _saveUniversityImage(universityId: universityId, imagePath: path);
-        emit(state.copyWith(imagePath: path, clearImageFailedMessage: true));
-      case ImagePickCancelled():
-        break;
-      case ImagePickPermissionDenied():
-        emit(
-          state.copyWith(
-            notice: UniversityDetailNotice.permissionDenied,
-            clearImageFailedMessage: true,
-          ),
-        );
-      case ImagePickFailed(:final message):
-        emit(
-          state.copyWith(
-            notice: UniversityDetailNotice.imageFailed,
-            imageFailedMessage: message,
-          ),
-        );
+        emit(current.copyWith(imagePath: path, clearImageFailure: true));
+      case Err(:final error):
+        emit(current.copyWith(imageFailure: error));
     }
   }
 
@@ -120,33 +127,41 @@ class UniversityDetailBloc
     Emitter<UniversityDetailState> emit,
   ) {
     final universityId = _universityId;
-    if (universityId == null || !state.isFormValid) {
+    final current = state;
+    if (universityId == null || current is! UniversityDetailLoaded) {
+      return;
+    }
+    if (!current.isValid) {
       return;
     }
 
-    final parsed = StudentCount.parse(state.studentsInput);
+    final parsed = StudentCount.parse(current.studentsInput);
     if (parsed case Ok(value: final count)) {
       _saveUniversityStudentCount(
         universityId: universityId,
         studentCount: count,
       );
       emit(
-        state.copyWith(
-          notice: UniversityDetailNotice.saved,
+        current.copyWith(
+          saveStatus: StudentCountSaveStatus.saved,
           clearValidationError: true,
         ),
       );
     }
   }
 
-  void _onNoticeShown(
-    UniversityDetailNoticeShown event,
+  void _onFeedbackDismissed(
+    UniversityDetailFeedbackDismissed event,
     Emitter<UniversityDetailState> emit,
   ) {
+    final current = state;
+    if (current is! UniversityDetailLoaded) {
+      return;
+    }
     emit(
-      state.copyWith(
-        notice: UniversityDetailNotice.none,
-        clearImageFailedMessage: true,
+      current.copyWith(
+        saveStatus: StudentCountSaveStatus.idle,
+        clearImageFailure: true,
       ),
     );
   }

@@ -1,9 +1,7 @@
 # Selector de imagen
 
-`ImagePickerService` en `lib/core/media/` abstrae cámara y galería. `ImagePickerServiceImpl` usa `image_picker` vía `ImagePicker` registrado en `RegisterModule`.
+`ImageOrigin` vive en dominio. `ImagePickerRepository` devuelve `Result<String?, Failure>`; `ImagePickerRepositoryImpl` en data traduce a `image_picker` y los códigos de `PlatformException`.
 
-Resultados: `ImagePicked`, `ImagePickCancelled`, `ImagePickPermissionDenied`, `ImagePickFailed`.
+`PickUniversityImage` es el único punto de entrada desde `UniversityDetailBloc`. `ImageSourceSheet.show` devuelve `ImageOrigin?` para cámara o galería.
 
-`UniversityDetailBloc` llama al servicio y, si hay archivo, guarda la ruta con `SaveUniversityImage` de inmediato.
-
-iOS: `NSCameraUsageDescription` y `NSPhotoLibraryUsageDescription` en `Info.plist`. Android: `<queries>` con `IMAGE_CAPTURE`; no declarar `CAMERA` en el manifiesto.
+Android: sin `CAMERA` en el manifiesto de la app; `<queries>` de `IMAGE_CAPTURE` en `AndroidManifest.xml`. iOS: textos de uso en `Info.plist`. Detalle en README.

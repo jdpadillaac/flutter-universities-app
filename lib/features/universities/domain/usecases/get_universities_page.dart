@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:injectable/injectable.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universities_app/core/error/failure.dart';
+import 'package:universities_app/features/universities/domain/config/universities_list_config.dart';
 import 'package:universities_app/features/universities/domain/entities/universities_slice_entity.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/repositories/universities_repository.dart';
@@ -15,7 +16,7 @@ class GetUniversitiesPage {
 
   Future<Result<UniversitiesSliceEntity, Failure>> call({
     required int page,
-    int pageSize = 20,
+    int pageSize = UniversitiesListConfig.pageSize,
   }) async {
     if (page < 0) {
       return const Err(UnexpectedFailure(message: 'page must be >= 0'));

@@ -21,4 +21,6 @@ abstract final class AppColors {
   static const Color error = Color(0xFFB91C1C);
   static const Color disabledBackground = Color(0xFFE5E7EB);
   static const Color disabledForeground = Color(0xFF6B7280);
+
+  static const Color transparent = Color(0x00000000);
 }

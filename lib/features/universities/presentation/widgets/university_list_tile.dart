@@ -22,7 +22,6 @@ class UniversityListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final domain = university.domains.isEmpty ? '' : university.domains.first;
     return Material(
       color: AppColors.surface,
       child: InkWell(
@@ -43,28 +42,49 @@ class UniversityListTile extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        university.name,
-                        style: AppTypography.itemTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (domain.isNotEmpty) ...[
-                        const SizedBox(height: AppSpacing.xs),
-                        Text(domain, style: AppTypography.caption),
-                      ],
-                    ],
-                  ),
+                  child: _UniversityListTileTexts(university: university),
                 ),
-                const Icon(Icons.chevron_right, color: AppColors.icon),
+                const _UniversityListTileChevron(),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+}
+
+class _UniversityListTileTexts extends StatelessWidget {
+  const _UniversityListTileTexts({required this.university});
+
+  final University university;
+
+  @override
+  Widget build(BuildContext context) {
+    final domain = university.domains.isEmpty ? '' : university.domains.first;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          university.name,
+          style: AppTypography.itemTitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (domain.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(domain, style: AppTypography.caption),
+        ],
+      ],
+    );
+  }
+}
+
+class _UniversityListTileChevron extends StatelessWidget {
+  const _UniversityListTileChevron();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(Icons.chevron_right, color: AppColors.icon);
   }
 }

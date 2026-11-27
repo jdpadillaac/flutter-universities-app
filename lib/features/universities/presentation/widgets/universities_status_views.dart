@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
+import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
 import 'package:universities_app/core/theme/app_typography.dart';
 import 'package:universities_app/features/universities/presentation/bloc/universities_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/universities_event.dart';
-import 'package:universities_app/features/universities/presentation/l10n/failure_message.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/l10n/generated/app_localizations.dart';
 
 class UniversitiesLoadingState extends StatelessWidget {
@@ -35,36 +36,33 @@ class UniversitiesEmptyState extends StatelessWidget {
 }
 
 class UniversitiesFailureState extends StatelessWidget {
-  const UniversitiesFailureState({required this.failure, super.key});
+  const UniversitiesFailureState({
+    required this.failure,
+    required this.failureMessageResolver,
+    super.key,
+  });
 
   final Failure failure;
-
-  static const FailureMessage _failureMessage = FailureMessage();
+  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final message = _failureMessage.resolve(failure, l10n);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline, color: AppColors.icon, size: 40),
+            const _UniversitiesFailureIcon(),
             const SizedBox(height: AppSpacing.md),
             Text(
-              message,
+              failureMessageResolver.resolve(failure, l10n),
               style: AppTypography.body,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppSpacing.lg),
-            FilledButton(
-              onPressed: () => context.read<UniversitiesBloc>().add(
-                const UniversitiesRetryRequested(),
-              ),
-              child: Text(l10n.retry),
-            ),
+            const _UniversitiesRetryButton(),
           ],
         ),
       ),
@@ -73,16 +71,18 @@ class UniversitiesFailureState extends StatelessWidget {
 }
 
 class UniversitiesInlineFailureBanner extends StatelessWidget {
-  const UniversitiesInlineFailureBanner({required this.failure, super.key});
+  const UniversitiesInlineFailureBanner({
+    required this.failure,
+    required this.failureMessageResolver,
+    super.key,
+  });
 
   final Failure failure;
-
-  static const FailureMessage _failureMessage = FailureMessage();
+  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final message = _failureMessage.resolve(failure, l10n);
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: AppColors.surface,
@@ -92,16 +92,57 @@ class UniversitiesInlineFailureBanner extends StatelessWidget {
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Row(
           children: [
-            Expanded(child: Text(message, style: AppTypography.caption)),
-            TextButton(
-              onPressed: () => context.read<UniversitiesBloc>().add(
-                const UniversitiesRetryRequested(),
+            Expanded(
+              child: Text(
+                failureMessageResolver.resolve(failure, l10n),
+                style: AppTypography.caption,
               ),
-              child: Text(l10n.retry),
             ),
+            const _UniversitiesInlineRetryButton(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _UniversitiesFailureIcon extends StatelessWidget {
+  const _UniversitiesFailureIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(
+      Icons.error_outline,
+      color: AppColors.icon,
+      size: AppSizes.iconXl,
+    );
+  }
+}
+
+class _UniversitiesRetryButton extends StatelessWidget {
+  const _UniversitiesRetryButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: () => context.read<UniversitiesBloc>().add(
+        const UniversitiesRetryRequested(),
+      ),
+      child: Text(AppLocalizations.of(context).retry),
+    );
+  }
+}
+
+class _UniversitiesInlineRetryButton extends StatelessWidget {
+  const _UniversitiesInlineRetryButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () => context.read<UniversitiesBloc>().add(
+        const UniversitiesRetryRequested(),
+      ),
+      child: Text(AppLocalizations.of(context).retry),
     );
   }
 }

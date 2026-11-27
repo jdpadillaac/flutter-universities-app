@@ -13,7 +13,7 @@ import 'package:universities_app/l10n/generated/app_localizations.dart';
 class StudentCountCard extends StatelessWidget {
   const StudentCountCard({required this.state, super.key});
 
-  final UniversityDetailState state;
+  final UniversityDetailLoaded state;
 
   static const StudentCountErrorMessage _errorMessage =
       StudentCountErrorMessage();
@@ -31,27 +31,50 @@ class StudentCountCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(l10n.studentCountLabel, style: AppTypography.fieldLabel),
+            const _StudentCountLabel(),
             const SizedBox(height: AppSizes.studentCountCardGap),
             StudentCountField(
               initialValue: state.studentsInput,
               errorText: errorText,
             ),
             const SizedBox(height: AppSizes.studentCountCardGap),
-            SizedBox(
-              width: double.infinity,
-              height: AppSizes.fieldHeight,
-              child: FilledButton(
-                onPressed: state.isFormValid
-                    ? () => context.read<UniversityDetailBloc>().add(
-                        const UniversityStudentsSaveRequested(),
-                      )
-                    : null,
-                child: Text(l10n.save),
-              ),
-            ),
+            _StudentCountSaveButton(enabled: state.isValid),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _StudentCountLabel extends StatelessWidget {
+  const _StudentCountLabel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      AppLocalizations.of(context).studentCountLabel,
+      style: AppTypography.fieldLabel,
+    );
+  }
+}
+
+class _StudentCountSaveButton extends StatelessWidget {
+  const _StudentCountSaveButton({required this.enabled});
+
+  final bool enabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: AppSizes.fieldHeight,
+      child: FilledButton(
+        onPressed: enabled
+            ? () => context.read<UniversityDetailBloc>().add(
+                const UniversityStudentsSaveRequested(),
+              )
+            : null,
+        child: Text(AppLocalizations.of(context).save),
       ),
     );
   }

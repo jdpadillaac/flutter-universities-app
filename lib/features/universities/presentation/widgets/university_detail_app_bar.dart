@@ -13,25 +13,37 @@ class UniversityDetailAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return AppBar(
-      leading: Semantics(
-        button: true,
-        label: l10n.backTooltip,
-        child: Tooltip(
-          message: l10n.backTooltip,
-          child: IconButton(
-            onPressed: () => context.pop(),
-            icon: const Icon(Icons.arrow_back),
-            iconSize: 22,
-            constraints: const BoxConstraints(
-              minWidth: AppSizes.appBarBackButton,
-              minHeight: AppSizes.appBarBackButton,
-            ),
+      leading: const _UniversityDetailBackButton(),
+      title: Text(
+        AppLocalizations.of(context).detailTitle,
+        style: AppTypography.appBarTitle,
+      ),
+    );
+  }
+}
+
+class _UniversityDetailBackButton extends StatelessWidget {
+  const _UniversityDetailBackButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Semantics(
+      button: true,
+      label: l10n.backTooltip,
+      child: Tooltip(
+        message: l10n.backTooltip,
+        child: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(Icons.arrow_back),
+          iconSize: AppSizes.appBarIcon,
+          constraints: const BoxConstraints(
+            minWidth: AppSizes.appBarBackButton,
+            minHeight: AppSizes.appBarBackButton,
           ),
         ),
       ),
-      title: Text(l10n.detailTitle, style: AppTypography.appBarTitle),
     );
   }
 }

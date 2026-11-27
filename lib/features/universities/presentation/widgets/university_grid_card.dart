@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:universities_app/core/theme/app_colors.dart';
-import 'package:universities_app/core/theme/app_radius.dart';
 import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
 import 'package:universities_app/core/theme/app_typography.dart';
@@ -23,13 +21,7 @@ class UniversityGridCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final domain = university.domains.isEmpty ? '' : university.domains.first;
-    return Material(
-      color: AppColors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppRadius.card),
-        side: const BorderSide(color: AppColors.border),
-      ),
+    return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -39,24 +31,45 @@ class UniversityGridCard extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.lg),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                UniversityAvatar(
-                  initials: initials,
-                  size: AppSizes.gridAvatar,
-                  imagePath: imagePath,
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                Text(university.name, style: AppTypography.gridTitle),
-                const Spacer(),
-                if (domain.isNotEmpty)
-                  Text(domain, style: AppTypography.gridDomain),
-              ],
+            child: _UniversityGridCardContent(
+              university: university,
+              initials: initials,
+              imagePath: imagePath,
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _UniversityGridCardContent extends StatelessWidget {
+  const _UniversityGridCardContent({
+    required this.university,
+    required this.initials,
+    required this.imagePath,
+  });
+
+  final University university;
+  final String initials;
+  final String? imagePath;
+
+  @override
+  Widget build(BuildContext context) {
+    final domain = university.domains.isEmpty ? '' : university.domains.first;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        UniversityAvatar(
+          initials: initials,
+          size: AppSizes.gridAvatar,
+          imagePath: imagePath,
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        Text(university.name, style: AppTypography.gridTitle),
+        const Spacer(),
+        if (domain.isNotEmpty) Text(domain, style: AppTypography.gridDomain),
+      ],
     );
   }
 }

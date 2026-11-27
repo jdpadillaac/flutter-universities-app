@@ -10,25 +10,36 @@ class LoadMoreIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.all(AppSpacing.lg),
       child: Center(
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(
-              width: AppSizes.loadMoreIndicator,
-              height: AppSizes.loadMoreIndicator,
-              child: CircularProgressIndicator(
-                strokeWidth: AppSizes.loadMoreStroke,
-                color: AppColors.primary,
-              ),
-            ),
+            const _LoadMoreSpinner(),
             const SizedBox(width: AppSpacing.sm),
-            Text(l10n.loadingMore, style: AppTypography.caption),
+            Text(
+              AppLocalizations.of(context).loadingMore,
+              style: AppTypography.caption,
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _LoadMoreSpinner extends StatelessWidget {
+  const _LoadMoreSpinner();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      width: AppSizes.loadMoreIndicator,
+      height: AppSizes.loadMoreIndicator,
+      child: CircularProgressIndicator(
+        strokeWidth: AppSizes.loadMoreStroke,
+        color: AppColors.primary,
       ),
     );
   }

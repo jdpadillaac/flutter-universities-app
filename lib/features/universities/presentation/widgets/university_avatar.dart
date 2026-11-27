@@ -21,17 +21,10 @@ class UniversityAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final path = imagePath;
     if (path != null && path.isNotEmpty) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.control),
-        child: Image.file(
-          File(path),
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return UniversityAvatarFallback(initials: initials, size: size);
-          },
-        ),
+      return _UniversityAvatarImage(
+        imagePath: path,
+        initials: initials,
+        size: size,
       );
     }
     return UniversityAvatarFallback(initials: initials, size: size);
@@ -59,6 +52,33 @@ class UniversityAvatarFallback extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Text(initials, style: AppTypography.avatarInitials),
+    );
+  }
+}
+
+class _UniversityAvatarImage extends StatelessWidget {
+  const _UniversityAvatarImage({
+    required this.imagePath,
+    required this.initials,
+    required this.size,
+  });
+
+  final String imagePath;
+  final String initials;
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(AppRadius.control),
+      child: Image.file(
+        File(imagePath),
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            UniversityAvatarFallback(initials: initials, size: size),
+      ),
     );
   }
 }

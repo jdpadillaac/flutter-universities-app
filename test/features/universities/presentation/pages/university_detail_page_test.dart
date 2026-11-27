@@ -6,6 +6,7 @@ import 'package:universities_app/features/universities/domain/entities/universit
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail_page.dart';
 import '../../../../support/localized_material_app.dart';
 
@@ -25,19 +26,11 @@ void main() {
 
   setUp(() {
     bloc = MockUniversityDetailBloc();
-    when(() => bloc.state).thenReturn(
-      const UniversityDetailState(
-        status: UniversityDetailStatus.ready,
-        university: university,
-      ),
-    );
+    when(
+      () => bloc.state,
+    ).thenReturn(const UniversityDetailLoaded(university: university));
     when(() => bloc.stream).thenAnswer(
-      (_) => Stream.value(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
-          university: university,
-        ),
-      ),
+      (_) => Stream.value(const UniversityDetailLoaded(university: university)),
     );
     when(() => bloc.close()).thenAnswer((_) async {});
   });
@@ -47,7 +40,9 @@ void main() {
     return LocalizedMaterialApp(
       child: BlocProvider<UniversityDetailBloc>.value(
         value: bloc,
-        child: const UniversityDetailView(),
+        child: const UniversityDetailView(
+          failureMessageResolver: FailureMessageResolver(),
+        ),
       ),
     );
   }
@@ -56,12 +51,7 @@ void main() {
     'shows country chip and No disponible when state province is missing',
     (tester) async {
       await tester.pumpWidget(
-        buildHarness(
-          const UniversityDetailState(
-            status: UniversityDetailStatus.ready,
-            university: university,
-          ),
-        ),
+        buildHarness(const UniversityDetailLoaded(university: university)),
       );
 
       expect(find.text('CO · Colombia'), findsOneWidget);
@@ -74,8 +64,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
+        const UniversityDetailLoaded(
           university: university,
           studentsInput: '0',
         ),
@@ -89,12 +78,7 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
-          university: university,
-        ),
-      ),
+      buildHarness(const UniversityDetailLoaded(university: university)),
     );
 
     expect(find.text('Cámara'), findsOneWidget);
@@ -106,8 +90,7 @@ void main() {
   ) async {
     await tester.pumpWidget(
       buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
+        const UniversityDetailLoaded(
           university: university,
           studentsInput: '0',
           studentsTouched: true,
@@ -123,11 +106,19 @@ void main() {
     expect(button.onPressed, isNull);
   });
 
+  testWidgets('shows back to list when university is not found', (
+    tester,
+  ) async {
+    await tester.pumpWidget(buildHarness(UniversityDetailNotFound()));
+
+    expect(find.text('No se encontró la universidad.'), findsOneWidget);
+    expect(find.text('Volver a la lista'), findsOneWidget);
+  });
+
   testWidgets('enables save with valid student count', (tester) async {
     await tester.pumpWidget(
       buildHarness(
-        const UniversityDetailState(
-          status: UniversityDetailStatus.ready,
+        const UniversityDetailLoaded(
           university: university,
           studentsInput: '42',
           studentsTouched: true,

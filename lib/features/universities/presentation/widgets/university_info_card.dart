@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
+import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
 import 'package:universities_app/core/theme/app_typography.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
@@ -28,12 +29,12 @@ class UniversityInfoCard extends StatelessWidget {
                 notAvailable: l10n.notAvailable,
               ),
             ),
-            const Divider(height: 1, color: AppColors.divider),
+            const _UniversityInfoDivider(),
             UniversityInfoRow(
               label: l10n.domainLabel,
               value: UniversityDomainValue(domains: university.domains),
             ),
-            const Divider(height: 1, color: AppColors.divider),
+            const _UniversityInfoDivider(),
             UniversityInfoRow(
               label: l10n.websiteLabel,
               value: UniversityWebsiteValue(
@@ -65,10 +66,7 @@ class UniversityInfoRow extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            label,
-            style: AppTypography.body.copyWith(color: AppColors.textSecondary),
-          ),
+          _UniversityInfoLabel(label: label),
           const SizedBox(height: AppSpacing.xs),
           value,
         ],
@@ -91,15 +89,9 @@ class UniversityProvinceValue extends StatelessWidget {
   Widget build(BuildContext context) {
     final value = stateProvince;
     if (value == null || value.isEmpty) {
-      return Text(
-        notAvailable,
-        style: AppTypography.bodyStrong.copyWith(
-          color: AppColors.textTertiary,
-          fontStyle: FontStyle.italic,
-        ),
-      );
+      return _UniversityNotAvailableText(text: notAvailable);
     }
-    return Text(value, style: AppTypography.bodyStrong);
+    return _UniversityInfoValueText(text: value);
   }
 }
 
@@ -115,9 +107,9 @@ class UniversityDomainValue extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: domains
-          .map((domain) => Text(domain, style: AppTypography.bodyStrong))
-          .toList(),
+      children: [
+        for (final domain in domains) _UniversityInfoValueText(text: domain),
+      ],
     );
   }
 }
@@ -139,16 +131,78 @@ class UniversityWebsiteValue extends StatelessWidget {
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: webPages
-          .map(
-            (page) => Text(
-              formatter.format(page),
-              style: AppTypography.bodyStrong.copyWith(
-                color: AppColors.primaryStrong,
-              ),
-            ),
-          )
-          .toList(),
+      children: [
+        for (final page in webPages)
+          _UniversityWebsiteText(text: formatter.format(page)),
+      ],
+    );
+  }
+}
+
+class _UniversityInfoDivider extends StatelessWidget {
+  const _UniversityInfoDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Divider(
+      height: AppSizes.dividerThickness,
+      color: AppColors.divider,
+    );
+  }
+}
+
+class _UniversityInfoLabel extends StatelessWidget {
+  const _UniversityInfoLabel({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: AppTypography.body.copyWith(color: AppColors.textSecondary),
+    );
+  }
+}
+
+class _UniversityInfoValueText extends StatelessWidget {
+  const _UniversityInfoValueText({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text, style: AppTypography.bodyStrong);
+  }
+}
+
+class _UniversityNotAvailableText extends StatelessWidget {
+  const _UniversityNotAvailableText({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: AppTypography.bodyStrong.copyWith(
+        color: AppColors.textTertiary,
+        fontStyle: FontStyle.italic,
+      ),
+    );
+  }
+}
+
+class _UniversityWebsiteText extends StatelessWidget {
+  const _UniversityWebsiteText({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: AppTypography.bodyStrong.copyWith(color: AppColors.primaryStrong),
     );
   }
 }

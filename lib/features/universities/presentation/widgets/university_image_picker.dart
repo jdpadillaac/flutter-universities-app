@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
 import 'package:universities_app/core/theme/app_radius.dart';
 import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_event.dart';
 import 'package:universities_app/features/universities/presentation/widgets/dashed_border_painter.dart';
@@ -18,13 +18,23 @@ class UniversityImagePicker extends StatelessWidget {
 
   final String? imagePath;
 
+  Future<void> _pickFromSheet(BuildContext context) async {
+    final origin = await ImageSourceSheet.show(context);
+    if (origin == null || !context.mounted) {
+      return;
+    }
+    context.read<UniversityDetailBloc>().add(
+      UniversityImagePickRequested(origin),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final path = imagePath;
     if (path != null && path.isNotEmpty) {
       return UniversityImagePreview(
         imagePath: path,
-        onChange: () => ImageSourceSheet.show(context),
+        onChange: () => _pickFromSheet(context),
       );
     }
     return const UniversityImagePickerPlaceholder();
@@ -36,7 +46,6 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return CustomPaint(
       painter: DashedBorderPainter(radius: AppRadius.card),
       child: Container(
@@ -46,45 +55,12 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
           color: AppColors.primaryContainer,
           borderRadius: BorderRadius.circular(AppRadius.card),
         ),
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.image_outlined,
-              size: AppSizes.imagePickerIcon,
-              color: AppColors.primaryStrong,
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: () => context.read<UniversityDetailBloc>().add(
-                        const UniversityImagePickRequested(
-                          ImagePickSource.camera,
-                        ),
-                      ),
-                      icon: const Icon(Icons.photo_camera_outlined, size: 18),
-                      label: Text(l10n.camera),
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => context.read<UniversityDetailBloc>().add(
-                        const UniversityImagePickRequested(
-                          ImagePickSource.gallery,
-                        ),
-                      ),
-                      icon: const Icon(Icons.photo_library_outlined, size: 18),
-                      label: Text(l10n.gallery),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _ImagePickerPlaceholderIcon(),
+            SizedBox(height: AppSpacing.md),
+            _ImagePickerActions(),
           ],
         ),
       ),
@@ -104,7 +80,6 @@ class UniversityImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return ClipRRect(
       borderRadius: BorderRadius.circular(AppRadius.card),
       child: SizedBox(
@@ -117,14 +92,86 @@ class UniversityImagePreview extends StatelessWidget {
             Positioned(
               right: AppSpacing.md,
               bottom: AppSpacing.md,
-              child: FilledButton(
-                onPressed: onChange,
-                child: Text(l10n.changeImage),
-              ),
+              child: _ChangeImageButton(onPressed: onChange),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ImagePickerPlaceholderIcon extends StatelessWidget {
+  const _ImagePickerPlaceholderIcon();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Icon(
+      Icons.image_outlined,
+      size: AppSizes.iconLg,
+      color: AppColors.primaryStrong,
+    );
+  }
+}
+
+class _ImagePickerActions extends StatelessWidget {
+  const _ImagePickerActions();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+      child: Row(
+        children: [
+          Expanded(child: _CameraButton()),
+          SizedBox(width: AppSpacing.sm),
+          Expanded(child: _GalleryButton()),
+        ],
+      ),
+    );
+  }
+}
+
+class _CameraButton extends StatelessWidget {
+  const _CameraButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
+      onPressed: () => context.read<UniversityDetailBloc>().add(
+        const UniversityImagePickRequested(ImageOrigin.camera),
+      ),
+      icon: const Icon(Icons.photo_camera_outlined, size: AppSizes.iconSm),
+      label: Text(AppLocalizations.of(context).camera),
+    );
+  }
+}
+
+class _GalleryButton extends StatelessWidget {
+  const _GalleryButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton.icon(
+      onPressed: () => context.read<UniversityDetailBloc>().add(
+        const UniversityImagePickRequested(ImageOrigin.gallery),
+      ),
+      icon: const Icon(Icons.photo_library_outlined, size: AppSizes.iconSm),
+      label: Text(AppLocalizations.of(context).gallery),
+    );
+  }
+}
+
+class _ChangeImageButton extends StatelessWidget {
+  const _ChangeImageButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: onPressed,
+      child: Text(AppLocalizations.of(context).changeImage),
     );
   }
 }

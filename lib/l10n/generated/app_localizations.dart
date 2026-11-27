@@ -214,23 +214,17 @@ abstract class AppLocalizations {
   /// **'No se encontró la universidad.'**
   String get universityNotFound;
 
+  /// No description provided for @backToList.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a la lista'**
+  String get backToList;
+
   /// No description provided for @savedSuccess.
   ///
   /// In es, this message translates to:
   /// **'Guardado correctamente.'**
   String get savedSuccess;
-
-  /// No description provided for @permissionDenied.
-  ///
-  /// In es, this message translates to:
-  /// **'Se denegó el permiso para usar la cámara o la galería.'**
-  String get permissionDenied;
-
-  /// No description provided for @imagePickFailed.
-  ///
-  /// In es, this message translates to:
-  /// **'No se pudo seleccionar la imagen.'**
-  String get imagePickFailed;
 
   /// No description provided for @studentCountEmpty.
   ///
@@ -279,6 +273,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se encontró la universidad.'**
   String get failureNotFound;
+
+  /// No description provided for @failurePermissionDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Se denegó el permiso para usar la cámara o la galería.'**
+  String get failurePermissionDenied;
+
+  /// No description provided for @failureCameraUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'La cámara no está disponible en este dispositivo.'**
+  String get failureCameraUnavailable;
 }
 
 class _AppLocalizationsDelegate

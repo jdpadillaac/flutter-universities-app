@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:universities_app/core/di/injection.dart';
+import 'package:universities_app/core/error/failure.dart';
+import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/presentation/bloc/layout_cubit.dart';
 import 'package:universities_app/features/universities/presentation/bloc/universities_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/universities_event.dart';
@@ -8,6 +10,7 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_event.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_state.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/widgets/universities_header.dart';
 import 'package:universities_app/features/universities/presentation/widgets/universities_scroll_view.dart';
@@ -33,15 +36,21 @@ class UniversitiesPage extends StatelessWidget {
       ],
       child: UniversitiesView(
         initialsResolver: getIt<UniversityInitialsResolver>(),
+        failureMessageResolver: getIt<FailureMessageResolver>(),
       ),
     );
   }
 }
 
 class UniversitiesView extends StatelessWidget {
-  const UniversitiesView({required this.initialsResolver, super.key});
+  const UniversitiesView({
+    required this.initialsResolver,
+    required this.failureMessageResolver,
+    super.key,
+  });
 
   final UniversityInitialsResolver initialsResolver;
+  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -51,56 +60,112 @@ class UniversitiesView extends StatelessWidget {
           children: [
             const UniversitiesHeader(),
             Expanded(
-              child: BlocBuilder<UniversitiesBloc, UniversitiesState>(
-                builder: (context, state) {
-                  return switch (state) {
-                    UniversitiesInitial() ||
-                    UniversitiesLoading() => const UniversitiesLoadingState(),
-                    UniversitiesLoaded(:final items) when items.isEmpty =>
-                      const UniversitiesEmptyState(),
-                    UniversitiesLoaded(:final items, :final isLoadingMore) =>
-                      BlocBuilder<
-                        UniversityThumbnailsBloc,
-                        UniversityThumbnailsState
-                      >(
-                        builder: (context, thumbnails) {
-                          return UniversitiesScrollView(
-                            items: items,
-                            imagePaths: thumbnails.imagePaths,
-                            initialsResolver: initialsResolver,
-                            showLoadMore: isLoadingMore,
-                          );
-                        },
-                      ),
-                    UniversitiesFailure(:final items, :final failure)
-                        when items.isEmpty =>
-                      UniversitiesFailureState(failure: failure),
-                    UniversitiesFailure(:final items, :final failure) =>
-                      BlocBuilder<
-                        UniversityThumbnailsBloc,
-                        UniversityThumbnailsState
-                      >(
-                        builder: (context, thumbnails) {
-                          return Column(
-                            children: [
-                              Expanded(
-                                child: UniversitiesScrollView(
-                                  items: items,
-                                  imagePaths: thumbnails.imagePaths,
-                                  initialsResolver: initialsResolver,
-                                ),
-                              ),
-                              UniversitiesInlineFailureBanner(failure: failure),
-                            ],
-                          );
-                        },
-                      ),
-                  };
-                },
+              child: _UniversitiesBody(
+                initialsResolver: initialsResolver,
+                failureMessageResolver: failureMessageResolver,
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _UniversitiesBody extends StatelessWidget {
+  const _UniversitiesBody({
+    required this.initialsResolver,
+    required this.failureMessageResolver,
+  });
+
+  final UniversityInitialsResolver initialsResolver;
+  final FailureMessageResolver failureMessageResolver;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UniversitiesBloc, UniversitiesState>(
+      builder: (context, state) => switch (state) {
+        UniversitiesInitial() ||
+        UniversitiesLoading() => const UniversitiesLoadingState(),
+        UniversitiesLoaded(:final items) when items.isEmpty =>
+          const UniversitiesEmptyState(),
+        UniversitiesLoaded(:final items, :final isLoadingMore) =>
+          _UniversitiesThumbnailsScrollView(
+            items: items,
+            initialsResolver: initialsResolver,
+            showLoadMore: isLoadingMore,
+          ),
+        UniversitiesFailure(:final items, :final failure) when items.isEmpty =>
+          UniversitiesFailureState(
+            failure: failure,
+            failureMessageResolver: failureMessageResolver,
+          ),
+        UniversitiesFailure(:final items, :final failure) =>
+          _UniversitiesListWithFailure(
+            items: items,
+            failure: failure,
+            initialsResolver: initialsResolver,
+            failureMessageResolver: failureMessageResolver,
+          ),
+      },
+    );
+  }
+}
+
+class _UniversitiesListWithFailure extends StatelessWidget {
+  const _UniversitiesListWithFailure({
+    required this.items,
+    required this.failure,
+    required this.initialsResolver,
+    required this.failureMessageResolver,
+  });
+
+  final List<University> items;
+  final Failure failure;
+  final UniversityInitialsResolver initialsResolver;
+  final FailureMessageResolver failureMessageResolver;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: _UniversitiesThumbnailsScrollView(
+            items: items,
+            initialsResolver: initialsResolver,
+          ),
+        ),
+        UniversitiesInlineFailureBanner(
+          failure: failure,
+          failureMessageResolver: failureMessageResolver,
+        ),
+      ],
+    );
+  }
+}
+
+class _UniversitiesThumbnailsScrollView extends StatelessWidget {
+  const _UniversitiesThumbnailsScrollView({
+    required this.items,
+    required this.initialsResolver,
+    this.showLoadMore = false,
+  });
+
+  final List<University> items;
+  final UniversityInitialsResolver initialsResolver;
+  final bool showLoadMore;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<UniversityThumbnailsBloc, UniversityThumbnailsState>(
+      builder: (context, thumbnails) => UniversitiesScrollView(
+        items: items,
+        imagePaths: switch (thumbnails) {
+          UniversityThumbnailsLoaded(:final imagePaths) => imagePaths,
+          UniversityThumbnailsInitial() => const <String, String>{},
+        },
+        initialsResolver: initialsResolver,
+        showLoadMore: showLoadMore,
       ),
     );
   }

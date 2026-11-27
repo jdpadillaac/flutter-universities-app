@@ -10,7 +10,7 @@ Cada objeto trae `name`, `country`, `alpha_two_code`, `domains`, `web_pages` y `
 
 ## Stack
 
-Flutter 3.50.1, Dio, oxidized, injectable con GetIt, go_router, flutter_bloc, freezed y json_serializable solo en el DTO, Equatable en las entidades, `image_picker` detrás de `ImagePickerService`. El análisis usa `very_good_analysis`. Los tests y el coverage usan Very Good CLI con mínimo 90%.
+Flutter 3.50.1, Dio, oxidized, injectable con GetIt, go_router, flutter_bloc, freezed y json_serializable solo en el DTO, Equatable en las entidades, `image_picker` detrás de `ImagePickerRepository` en data. El análisis usa `very_good_analysis`. Los tests y el coverage usan Very Good CLI con mínimo 90%.
 
 ## Decisiones
 
@@ -20,3 +20,7 @@ Flutter 3.50.1, Dio, oxidized, injectable con GetIt, go_router, flutter_bloc, fr
 - No hay plataforma web.
 - No hay comentarios en `lib/` ni en `test/`.
 - `configureDependencies` sigue siendo una función top-level porque `@InjectableInit` solo se puede poner en funciones.
+
+## Documentación
+
+`README.md` resume funcionalidades, arquitectura en capas, decisiones, permisos de imagen, cobertura (~91%) y capturas pendientes.

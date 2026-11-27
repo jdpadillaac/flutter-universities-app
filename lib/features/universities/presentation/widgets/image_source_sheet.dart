@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
-import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
-import 'package:universities_app/features/universities/presentation/bloc/university_detail_event.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 import 'package:universities_app/l10n/generated/app_localizations.dart';
 
 class ImageSourceSheet extends StatelessWidget {
-  const ImageSourceSheet({required this.blocContext, super.key});
+  const ImageSourceSheet({super.key});
 
-  final BuildContext blocContext;
-
-  static Future<void> show(BuildContext blocContext) {
-    return showModalBottomSheet<void>(
-      context: blocContext,
-      builder: (sheetContext) {
-        return SafeArea(child: ImageSourceSheet(blocContext: blocContext));
-      },
+  static Future<ImageOrigin?> show(BuildContext context) {
+    return showModalBottomSheet<ImageOrigin?>(
+      context: context,
+      builder: (sheetContext) => const SafeArea(child: ImageSourceSheet()),
     );
   }
 
@@ -25,27 +18,38 @@ class ImageSourceSheet extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ListTile(
-          leading: const Icon(Icons.photo_camera_outlined),
-          title: Text(l10n.camera),
-          onTap: () {
-            Navigator.of(context).pop();
-            blocContext.read<UniversityDetailBloc>().add(
-              const UniversityImagePickRequested(ImagePickSource.camera),
-            );
-          },
+        _ImageSourceOption(
+          icon: Icons.photo_camera_outlined,
+          label: l10n.camera,
+          origin: ImageOrigin.camera,
         ),
-        ListTile(
-          leading: const Icon(Icons.photo_library_outlined),
-          title: Text(l10n.gallery),
-          onTap: () {
-            Navigator.of(context).pop();
-            blocContext.read<UniversityDetailBloc>().add(
-              const UniversityImagePickRequested(ImagePickSource.gallery),
-            );
-          },
+        _ImageSourceOption(
+          icon: Icons.photo_library_outlined,
+          label: l10n.gallery,
+          origin: ImageOrigin.gallery,
         ),
       ],
+    );
+  }
+}
+
+class _ImageSourceOption extends StatelessWidget {
+  const _ImageSourceOption({
+    required this.icon,
+    required this.label,
+    required this.origin,
+  });
+
+  final IconData icon;
+  final String label;
+  final ImageOrigin origin;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(label),
+      onTap: () => Navigator.of(context).pop(origin),
     );
   }
 }

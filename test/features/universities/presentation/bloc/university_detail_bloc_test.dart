@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universities_app/core/error/failure.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/entities/university_extras.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
+import 'package:universities_app/features/universities/domain/usecases/pick_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
@@ -24,7 +25,7 @@ class MockSaveUniversityImage extends Mock implements SaveUniversityImage {}
 class MockSaveUniversityStudentCount extends Mock
     implements SaveUniversityStudentCount {}
 
-class MockImagePickerService extends Mock implements ImagePickerService {}
+class MockPickUniversityImage extends Mock implements PickUniversityImage {}
 
 void main() {
   const university = University(
@@ -40,10 +41,10 @@ void main() {
   late MockGetUniversityExtras getUniversityExtras;
   late MockSaveUniversityImage saveUniversityImage;
   late MockSaveUniversityStudentCount saveUniversityStudentCount;
-  late MockImagePickerService imagePickerService;
+  late MockPickUniversityImage pickUniversityImage;
 
   setUpAll(() {
-    registerFallbackValue(ImagePickSource.gallery);
+    registerFallbackValue(ImageOrigin.gallery);
     registerFallbackValue(StudentCount.parse('1').unwrap());
   });
 
@@ -52,7 +53,7 @@ void main() {
     getUniversityExtras = MockGetUniversityExtras();
     saveUniversityImage = MockSaveUniversityImage();
     saveUniversityStudentCount = MockSaveUniversityStudentCount();
-    imagePickerService = MockImagePickerService();
+    pickUniversityImage = MockPickUniversityImage();
   });
 
   UniversityDetailBloc buildBloc() => UniversityDetailBloc(
@@ -60,7 +61,7 @@ void main() {
     getUniversityExtras,
     saveUniversityImage,
     saveUniversityStudentCount,
-    imagePickerService,
+    pickUniversityImage,
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
@@ -76,15 +77,23 @@ void main() {
       ).thenReturn(const UniversityExtras(imagePath: '/img.jpg'));
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>()
-          .having(
-            (state) => state.status,
-            'status',
-            UniversityDetailStatus.ready,
-          )
-          .having((state) => state.university?.name, 'name', 'Sample')
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>()
+          .having((state) => state.university.name, 'name', 'Sample')
           .having((state) => state.imagePath, 'imagePath', '/img.jpg'),
+    ],
+  );
+
+  blocTest<UniversityDetailBloc, UniversityDetailState>(
+    'emits notFound when the route id is missing',
+    build: buildBloc,
+    act: (bloc) => bloc.add(const UniversityDetailRequested(null)),
+    verify: (_) {
+      verifyNever(() => getUniversityById(any()));
+    },
+    expect: () => [
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailNotFound>(),
     ],
   );
 
@@ -98,21 +107,18 @@ void main() {
       );
     },
     expect: () => [
-      const UniversityDetailState(),
-      const UniversityDetailState(status: UniversityDetailStatus.notFound),
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailNotFound>(),
     ],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
     'shows validation error only after students changed',
     build: buildBloc,
-    seed: () => const UniversityDetailState(
-      status: UniversityDetailStatus.ready,
-      university: university,
-    ),
+    seed: () => const UniversityDetailLoaded(university: university),
     act: (bloc) => bloc.add(const UniversityStudentsChanged('0')),
     expect: () => [
-      isA<UniversityDetailState>()
+      isA<UniversityDetailLoaded>()
           .having((state) => state.studentsTouched, 'touched', true)
           .having(
             (state) => state.validationError,
@@ -146,13 +152,13 @@ void main() {
       ).called(1);
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
-        (state) => state.notice,
-        'notice',
-        UniversityDetailNotice.saved,
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
+        (state) => state.saveStatus,
+        'saveStatus',
+        StudentCountSaveStatus.saved,
       ),
     ],
   );
@@ -160,8 +166,7 @@ void main() {
   blocTest<UniversityDetailBloc, UniversityDetailState>(
     'ignores duplicate save events when the form is invalid',
     build: buildBloc,
-    seed: () => const UniversityDetailState(
-      status: UniversityDetailStatus.ready,
+    seed: () => const UniversityDetailLoaded(
       university: university,
       studentsInput: '0',
     ),
@@ -188,11 +193,11 @@ void main() {
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
       when(
-        () => imagePickerService.pick(ImagePickSource.camera),
-      ).thenAnswer((_) async => const ImagePicked('/tmp/photo.jpg'));
+        () => pickUniversityImage(ImageOrigin.camera),
+      ).thenAnswer((_) async => const Ok<String?, Failure>('/tmp/photo.jpg'));
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.camera));
+        ..add(const UniversityImagePickRequested(ImageOrigin.camera));
     },
     verify: (_) {
       verify(
@@ -203,9 +208,9 @@ void main() {
       ).called(1);
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
         (state) => state.imagePath,
         'imagePath',
         '/tmp/photo.jpg',
@@ -224,34 +229,31 @@ void main() {
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
       when(
-        () => imagePickerService.pick(ImagePickSource.gallery),
-      ).thenAnswer((_) async => const ImagePickCancelled());
+        () => pickUniversityImage(ImageOrigin.gallery),
+      ).thenAnswer((_) async => const Ok<String?, Failure>(null));
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.gallery));
+        ..add(const UniversityImagePickRequested(ImageOrigin.gallery));
     },
-    expect: () => [const UniversityDetailState(), isA<UniversityDetailState>()],
+    expect: () => [
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+    ],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
-    'clears notice after it is shown',
+    'clears feedback after it is dismissed',
     build: buildBloc,
-    seed: () => const UniversityDetailState(
-      status: UniversityDetailStatus.ready,
+    seed: () => const UniversityDetailLoaded(
       university: university,
-      notice: UniversityDetailNotice.saved,
+      saveStatus: StudentCountSaveStatus.saved,
     ),
-    act: (bloc) => bloc.add(const UniversityDetailNoticeShown()),
-    expect: () => [
-      const UniversityDetailState(
-        status: UniversityDetailStatus.ready,
-        university: university,
-      ),
-    ],
+    act: (bloc) => bloc.add(const UniversityDetailFeedbackDismissed()),
+    expect: () => [const UniversityDetailLoaded(university: university)],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
-    'emits image failure notice when the picker fails',
+    'stores image failure when the picker fails',
     build: buildBloc,
     act: (bloc) async {
       when(
@@ -260,26 +262,26 @@ void main() {
       when(
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
-      when(
-        () => imagePickerService.pick(ImagePickSource.camera),
-      ).thenAnswer((_) async => const ImagePickFailed('broken'));
+      when(() => pickUniversityImage(ImageOrigin.camera)).thenAnswer(
+        (_) async => const Err<String?, Failure>(UnexpectedFailure()),
+      );
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.camera));
+        ..add(const UniversityImagePickRequested(ImageOrigin.camera));
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
-        (state) => state.notice,
-        'notice',
-        UniversityDetailNotice.imageFailed,
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
+        (state) => state.imageFailure,
+        'imageFailure',
+        const UnexpectedFailure(),
       ),
     ],
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
-    'emits permission denied when image pick fails with permissions',
+    'stores permission failure when pick is denied',
     build: buildBloc,
     act: (bloc) async {
       when(
@@ -288,20 +290,20 @@ void main() {
       when(
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
-      when(
-        () => imagePickerService.pick(ImagePickSource.gallery),
-      ).thenAnswer((_) async => const ImagePickPermissionDenied());
+      when(() => pickUniversityImage(ImageOrigin.gallery)).thenAnswer(
+        (_) async => const Err<String?, Failure>(PermissionDeniedFailure()),
+      );
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.gallery));
+        ..add(const UniversityImagePickRequested(ImageOrigin.gallery));
     },
     expect: () => [
-      const UniversityDetailState(),
-      isA<UniversityDetailState>(),
-      isA<UniversityDetailState>().having(
-        (state) => state.notice,
-        'notice',
-        UniversityDetailNotice.permissionDenied,
+      isA<UniversityDetailLoading>(),
+      isA<UniversityDetailLoaded>(),
+      isA<UniversityDetailLoaded>().having(
+        (state) => state.imageFailure,
+        'imageFailure',
+        const PermissionDeniedFailure(),
       ),
     ],
   );

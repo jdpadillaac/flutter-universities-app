@@ -1,5 +1,5 @@
 ---
-description: Widgets stateless, archivos propios y tokens de tema
+description: Widgets stateless, widgets privados por pieza y tokens de tema
 alwaysApply: true
 ---
 
@@ -8,5 +8,8 @@ alwaysApply: true
 - StatelessWidget por defecto. StatefulWidget solo si el widget necesita un controller con dispose.
 - Los únicos StatefulWidget permitidos son `UniversitiesScrollView` y `StudentCountField`.
 - El estado de negocio y de UI vive en Bloc/Cubit. `setState` solo para sincronizar un controller local.
-- Prohibidos métodos que construyen widgets (`_buildHeader`, etc.). Cada pieza de UI es una clase widget en su propio archivo.
+- Prohibido que un método devuelva un widget (`_buildHeader`, etc.). Solo `build` devuelve widgets. Los callbacks que exige Flutter (`builder`, `itemBuilder`, `separatorBuilder`, `errorBuilder`) solo instancian un widget, sin árbol en línea.
+- Cada pieza o hoja del árbol con configuración o comportamiento propio es un StatelessWidget. Los widgets públicos van en su propio archivo; sus piezas internas son widgets privados (`_Foo`) en el mismo archivo.
+- Cada `BlocBuilder` y `BlocListener` vive en un widget dedicado. Su `builder` devuelve instancias de widgets, no un árbol en línea.
+- `Material` solo donde un `InkWell` necesita su propia superficie sobre un fondo opaco. Para fondos con ripple usa `Card` (toma `cardTheme`) o `Ink`.
 - Colores, espaciado, radios y tamaños fijos vienen de `lib/core/theme/`. No uses literales hex ni medidas sueltas en widgets de presentación.

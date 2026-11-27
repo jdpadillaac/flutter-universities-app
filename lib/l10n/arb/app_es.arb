@@ -20,9 +20,8 @@
   "retry": "Reintentar",
   "emptyUniversities": "No hay universidades disponibles.",
   "universityNotFound": "No se encontró la universidad.",
+  "backToList": "Volver a la lista",
   "savedSuccess": "Guardado correctamente.",
-  "permissionDenied": "Se denegó el permiso para usar la cámara o la galería.",
-  "imagePickFailed": "No se pudo seleccionar la imagen.",
   "studentCountEmpty": "Ingresa un número de estudiantes.",
   "studentCountNotANumber": "El valor debe ser un número entero.",
   "studentCountMustBePositive": "El valor debe ser mayor que cero.",
@@ -30,5 +29,7 @@
   "failureNetwork": "Ocurrió un error de red. Inténtalo de nuevo.",
   "failureParsing": "No se pudo procesar la respuesta.",
   "failureUnexpected": "Ocurrió un error inesperado.",
-  "failureNotFound": "No se encontró la universidad."
+  "failureNotFound": "No se encontró la universidad.",
+  "failurePermissionDenied": "Se denegó el permiso para usar la cámara o la galería.",
+  "failureCameraUnavailable": "La cámara no está disponible en este dispositivo."
 }
