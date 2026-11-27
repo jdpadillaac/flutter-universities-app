@@ -29,4 +29,4 @@ Inter vía `google_fonts`: screenTitle, detailTitle, appBarTitle, itemTitle, bod
 
 ## Textos
 
-`lib/l10n/arb/app_es.arb` → `AppLocalizations`. Mensajes de `Failure` y `StudentCountError` en clases bajo `presentation/l10n/`.
+`lib/l10n/arb/app_es.arb` → `AppLocalizations`. `FailureMessageResolver` vive en `presentation/helpers/failure_message_resolver.dart`. `StudentCountErrorMessage` vive en `pages/university_detail/student_count_error_message.dart`.

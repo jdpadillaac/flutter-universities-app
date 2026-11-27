@@ -1,5 +1,7 @@
 # Carga de datos
 
+Esta feature no tiene archivos en `presentation/`. El texto de un `Failure` para la UI vive en `lib/features/universities/presentation/helpers/failure_message_resolver.dart`.
+
 `UniversitiesRemoteDataSourceImpl` pide el cuerpo como texto a `ApiClient.get` con `ApiConfig.universitiesPath`.
 
 `ApiClient` devuelve `Ok` con el cuerpo. Un cuerpo `null` es `ParsingFailure`. `DioException` es `NetworkFailure` con el mensaje del cliente, o `A network error occurred.` si no hay mensaje, y con el status code cuando la respuesta lo trae.

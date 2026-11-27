@@ -9,4 +9,4 @@ Usa `Bloc` con eventos para flujos de presentación. `Cubit` solo para features 
 
 - Los blocs dependen de casos de uso, no de repositorios ni data sources.
 - Solo `UniversitiesScrollView` y `StudentCountField` pueden ser StatefulWidget: `ScrollController` y `TextEditingController` respectivamente, con `dispose` correcto.
-- `UniversitiesBloc`, `UniversityThumbnailsBloc` y `UniversityDetailBloc` viven en `presentation/bloc/`.
+- `UniversitiesBloc` y `UniversityThumbnailsBloc` viven en `pages/universities/bloc/`. `UniversityDetailBloc` vive en `pages/university_detail/bloc/`. `LayoutCubit` vive con la lista. Un bloc o cubit que usen dos o más pages va a `presentation/blocs/`.

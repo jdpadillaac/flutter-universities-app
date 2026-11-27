@@ -4,8 +4,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 import 'package:universities_app/core/network/api_config.dart';
 import 'package:universities_app/core/router/app_routes.dart';
-import 'package:universities_app/features/universities/presentation/pages/universities_page.dart';
-import 'package:universities_app/features/universities/presentation/pages/university_detail_page.dart';
+import 'package:universities_app/features/universities/presentation/pages/universities/universities_page.dart';
+import 'package:universities_app/features/universities/presentation/pages/university_detail/university_detail_page.dart';
 
 @module
 abstract class RegisterModule {

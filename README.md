@@ -57,7 +57,11 @@ lib/
   features/universities/
     domain/       University, casos de uso, config de lista
     data/         remotos, DTOs, repositorios
-    presentation/ páginas, widgets, bloc/cubit
+    presentation/
+      helpers/    texto de UI que usan dos o más pages
+      pages/
+        universities/       page, blocs y widgets de la lista
+        university_detail/  page, bloc y widgets del detalle
 ```
 
 ## Decisiones técnicas

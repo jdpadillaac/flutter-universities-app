@@ -1,5 +1,7 @@
 # Lista de universidades
 
+Page, blocs y widgets: `lib/features/universities/presentation/pages/universities/`.
+
 `UniversitiesPage` usa `UniversitiesBloc` y `UniversityThumbnailsBloc`. El catálogo vive en `UniversitiesScrollView` (scroll infinito con `UniversitiesListConfig`).
 
 Estados: carga centrada, vacío, error con Reintentar, lista o cuadrícula con `LoadMoreIndicator` y banner de error con ítems ya cargados.
