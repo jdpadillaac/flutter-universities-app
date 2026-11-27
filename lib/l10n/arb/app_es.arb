@@ -31,5 +31,7 @@
   "failureNetwork": "Ocurrió un error de red. Inténtalo de nuevo.",
   "failureParsing": "No se pudo procesar la respuesta.",
   "failureUnexpected": "Ocurrió un error inesperado.",
-  "failureNotFound": "No se encontró la universidad."
+  "failureNotFound": "No se encontró la universidad.",
+  "failurePermissionDenied": "Se denegó el permiso para usar la cámara o la galería.",
+  "failureCameraUnavailable": "La cámara no está disponible en este dispositivo."
 }

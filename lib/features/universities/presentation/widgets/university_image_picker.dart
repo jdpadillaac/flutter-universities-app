@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
 import 'package:universities_app/core/theme/app_colors.dart';
 import 'package:universities_app/core/theme/app_radius.dart';
 import 'package:universities_app/core/theme/app_sizes.dart';
 import 'package:universities_app/core/theme/app_spacing.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_event.dart';
 import 'package:universities_app/features/universities/presentation/widgets/dashed_border_painter.dart';
@@ -18,13 +18,23 @@ class UniversityImagePicker extends StatelessWidget {
 
   final String? imagePath;
 
+  Future<void> _pickFromSheet(BuildContext context) async {
+    final origin = await ImageSourceSheet.show(context);
+    if (origin == null || !context.mounted) {
+      return;
+    }
+    context.read<UniversityDetailBloc>().add(
+      UniversityImagePickRequested(origin),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final path = imagePath;
     if (path != null && path.isNotEmpty) {
       return UniversityImagePreview(
         imagePath: path,
-        onChange: () => ImageSourceSheet.show(context),
+        onChange: () => _pickFromSheet(context),
       );
     }
     return const UniversityImagePickerPlaceholder();
@@ -62,9 +72,7 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
                   Expanded(
                     child: FilledButton.icon(
                       onPressed: () => context.read<UniversityDetailBloc>().add(
-                        const UniversityImagePickRequested(
-                          ImagePickSource.camera,
-                        ),
+                        const UniversityImagePickRequested(ImageOrigin.camera),
                       ),
                       icon: const Icon(Icons.photo_camera_outlined, size: 18),
                       label: Text(l10n.camera),
@@ -74,9 +82,7 @@ class UniversityImagePickerPlaceholder extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () => context.read<UniversityDetailBloc>().add(
-                        const UniversityImagePickRequested(
-                          ImagePickSource.gallery,
-                        ),
+                        const UniversityImagePickRequested(ImageOrigin.gallery),
                       ),
                       icon: const Icon(Icons.photo_library_outlined, size: 18),
                       label: Text(l10n.gallery),

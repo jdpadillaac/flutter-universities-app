@@ -35,3 +35,14 @@ final class NotFoundFailure extends Failure {
   const NotFoundFailure({String message = 'University was not found.'})
     : super(message);
 }
+
+final class PermissionDeniedFailure extends Failure {
+  const PermissionDeniedFailure({
+    String message = 'Camera or gallery permission was denied.',
+  }) : super(message);
+}
+
+final class CameraUnavailableFailure extends Failure {
+  const CameraUnavailableFailure({String message = 'Camera is not available.'})
+    : super(message);
+}

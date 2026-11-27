@@ -3,11 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:oxidized/oxidized.dart';
 import 'package:universities_app/core/error/failure.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/entities/university_extras.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
+import 'package:universities_app/features/universities/domain/usecases/pick_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
@@ -24,7 +25,7 @@ class MockSaveUniversityImage extends Mock implements SaveUniversityImage {}
 class MockSaveUniversityStudentCount extends Mock
     implements SaveUniversityStudentCount {}
 
-class MockImagePickerService extends Mock implements ImagePickerService {}
+class MockPickUniversityImage extends Mock implements PickUniversityImage {}
 
 void main() {
   const university = University(
@@ -40,10 +41,10 @@ void main() {
   late MockGetUniversityExtras getUniversityExtras;
   late MockSaveUniversityImage saveUniversityImage;
   late MockSaveUniversityStudentCount saveUniversityStudentCount;
-  late MockImagePickerService imagePickerService;
+  late MockPickUniversityImage pickUniversityImage;
 
   setUpAll(() {
-    registerFallbackValue(ImagePickSource.gallery);
+    registerFallbackValue(ImageOrigin.gallery);
     registerFallbackValue(StudentCount.parse('1').unwrap());
   });
 
@@ -52,7 +53,7 @@ void main() {
     getUniversityExtras = MockGetUniversityExtras();
     saveUniversityImage = MockSaveUniversityImage();
     saveUniversityStudentCount = MockSaveUniversityStudentCount();
-    imagePickerService = MockImagePickerService();
+    pickUniversityImage = MockPickUniversityImage();
   });
 
   UniversityDetailBloc buildBloc() => UniversityDetailBloc(
@@ -60,7 +61,7 @@ void main() {
     getUniversityExtras,
     saveUniversityImage,
     saveUniversityStudentCount,
-    imagePickerService,
+    pickUniversityImage,
   );
 
   blocTest<UniversityDetailBloc, UniversityDetailState>(
@@ -201,11 +202,11 @@ void main() {
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
       when(
-        () => imagePickerService.pick(ImagePickSource.camera),
-      ).thenAnswer((_) async => const ImagePicked('/tmp/photo.jpg'));
+        () => pickUniversityImage(ImageOrigin.camera),
+      ).thenAnswer((_) async => const Ok<String?, Failure>('/tmp/photo.jpg'));
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.camera));
+        ..add(const UniversityImagePickRequested(ImageOrigin.camera));
     },
     verify: (_) {
       verify(
@@ -237,11 +238,11 @@ void main() {
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
       when(
-        () => imagePickerService.pick(ImagePickSource.gallery),
-      ).thenAnswer((_) async => const ImagePickCancelled());
+        () => pickUniversityImage(ImageOrigin.gallery),
+      ).thenAnswer((_) async => const Ok<String?, Failure>(null));
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.gallery));
+        ..add(const UniversityImagePickRequested(ImageOrigin.gallery));
     },
     expect: () => [const UniversityDetailState(), isA<UniversityDetailState>()],
   );
@@ -273,12 +274,12 @@ void main() {
       when(
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
-      when(
-        () => imagePickerService.pick(ImagePickSource.camera),
-      ).thenAnswer((_) async => const ImagePickFailed('broken'));
+      when(() => pickUniversityImage(ImageOrigin.camera)).thenAnswer(
+        (_) async => const Err<String?, Failure>(UnexpectedFailure()),
+      );
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.camera));
+        ..add(const UniversityImagePickRequested(ImageOrigin.camera));
     },
     expect: () => [
       const UniversityDetailState(),
@@ -301,12 +302,12 @@ void main() {
       when(
         () => getUniversityExtras('u-id'),
       ).thenReturn(const UniversityExtras());
-      when(
-        () => imagePickerService.pick(ImagePickSource.gallery),
-      ).thenAnswer((_) async => const ImagePickPermissionDenied());
+      when(() => pickUniversityImage(ImageOrigin.gallery)).thenAnswer(
+        (_) async => const Err<String?, Failure>(PermissionDeniedFailure()),
+      );
       bloc
         ..add(const UniversityDetailRequested('u-id'))
-        ..add(const UniversityImagePickRequested(ImagePickSource.gallery));
+        ..add(const UniversityImagePickRequested(ImageOrigin.gallery));
     },
     expect: () => [
       const UniversityDetailState(),

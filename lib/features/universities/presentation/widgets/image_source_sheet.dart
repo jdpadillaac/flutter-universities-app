@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
-import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
-import 'package:universities_app/features/universities/presentation/bloc/university_detail_event.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 import 'package:universities_app/l10n/generated/app_localizations.dart';
 
 class ImageSourceSheet extends StatelessWidget {
-  const ImageSourceSheet({required this.blocContext, super.key});
+  const ImageSourceSheet({super.key});
 
-  final BuildContext blocContext;
-
-  static Future<void> show(BuildContext blocContext) {
-    return showModalBottomSheet<void>(
-      context: blocContext,
-      builder: (sheetContext) {
-        return SafeArea(child: ImageSourceSheet(blocContext: blocContext));
-      },
+  static Future<ImageOrigin?> show(BuildContext context) {
+    return showModalBottomSheet<ImageOrigin?>(
+      context: context,
+      builder: (sheetContext) => const SafeArea(child: ImageSourceSheet()),
     );
   }
 
@@ -28,22 +21,12 @@ class ImageSourceSheet extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.photo_camera_outlined),
           title: Text(l10n.camera),
-          onTap: () {
-            Navigator.of(context).pop();
-            blocContext.read<UniversityDetailBloc>().add(
-              const UniversityImagePickRequested(ImagePickSource.camera),
-            );
-          },
+          onTap: () => Navigator.of(context).pop(ImageOrigin.camera),
         ),
         ListTile(
           leading: const Icon(Icons.photo_library_outlined),
           title: Text(l10n.gallery),
-          onTap: () {
-            Navigator.of(context).pop();
-            blocContext.read<UniversityDetailBloc>().add(
-              const UniversityImagePickRequested(ImagePickSource.gallery),
-            );
-          },
+          onTap: () => Navigator.of(context).pop(ImageOrigin.gallery),
         ),
       ],
     );

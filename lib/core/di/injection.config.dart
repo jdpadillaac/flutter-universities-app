@@ -16,9 +16,6 @@ import 'package:go_router/go_router.dart' as _i583;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:universities_app/core/di/register_module.dart' as _i786;
-import 'package:universities_app/core/media/image_picker_service.dart' as _i927;
-import 'package:universities_app/core/media/image_picker_service_impl.dart'
-    as _i155;
 import 'package:universities_app/core/network/api_client.dart' as _i304;
 import 'package:universities_app/core/theme/app_theme.dart' as _i321;
 import 'package:universities_app/core/utils/html_entity_decoder.dart' as _i265;
@@ -28,10 +25,14 @@ import 'package:universities_app/features/universities/data/datasources/remote/u
     as _i379;
 import 'package:universities_app/features/universities/data/datasources/remote/university_dto_mapper.dart'
     as _i297;
+import 'package:universities_app/features/universities/data/repositories/image_picker_repository_impl.dart'
+    as _i354;
 import 'package:universities_app/features/universities/data/repositories/universities_repository_impl.dart'
     as _i577;
 import 'package:universities_app/features/universities/data/repositories/university_extras_repository_impl.dart'
     as _i759;
+import 'package:universities_app/features/universities/domain/repositories/image_picker_repository.dart'
+    as _i202;
 import 'package:universities_app/features/universities/domain/repositories/universities_repository.dart'
     as _i874;
 import 'package:universities_app/features/universities/domain/repositories/university_extras_repository.dart'
@@ -44,6 +45,8 @@ import 'package:universities_app/features/universities/domain/usecases/get_unive
     as _i172;
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart'
     as _i31;
+import 'package:universities_app/features/universities/domain/usecases/pick_university_image.dart'
+    as _i886;
 import 'package:universities_app/features/universities/domain/usecases/save_university_image.dart'
     as _i576;
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart'
@@ -85,14 +88,17 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i759.UniversityExtrasRepositoryImpl(),
     );
     gh.lazySingleton<_i304.ApiClient>(() => _i304.ApiClient(gh<_i361.Dio>()));
-    gh.lazySingleton<_i927.ImagePickerService>(
-      () => _i155.ImagePickerServiceImpl(gh<_i183.ImagePicker>()),
+    gh.lazySingleton<_i202.ImagePickerRepository>(
+      () => _i354.ImagePickerRepositoryImpl(gh<_i183.ImagePicker>()),
     );
     gh.lazySingleton<_i297.UniversityDtoMapper>(
       () => _i297.UniversityDtoMapper(
         gh<_i265.HtmlEntityDecoder>(),
         gh<_i129.UniversityIdGenerator>(),
       ),
+    );
+    gh.factory<_i886.PickUniversityImage>(
+      () => _i886.PickUniversityImage(gh<_i202.ImagePickerRepository>()),
     );
     gh.factory<_i31.GetUniversityExtras>(
       () => _i31.GetUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
@@ -140,7 +146,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i31.GetUniversityExtras>(),
         gh<_i576.SaveUniversityImage>(),
         gh<_i267.SaveUniversityStudentCount>(),
-        gh<_i927.ImagePickerService>(),
+        gh<_i886.PickUniversityImage>(),
       ),
     );
     return this;

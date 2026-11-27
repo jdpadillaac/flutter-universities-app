@@ -10,6 +10,8 @@ class FailureMessage {
       ParsingFailure() => l10n.failureParsing,
       NotFoundFailure() => l10n.failureNotFound,
       UnexpectedFailure() => l10n.failureUnexpected,
+      PermissionDeniedFailure() => l10n.failurePermissionDenied,
+      CameraUnavailableFailure() => l10n.failureCameraUnavailable,
     };
   }
 }

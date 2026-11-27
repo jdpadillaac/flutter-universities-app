@@ -18,5 +18,13 @@ void main() {
       message.resolve(const UnexpectedFailure(), l10n),
       l10n.failureUnexpected,
     );
+    expect(
+      message.resolve(const PermissionDeniedFailure(), l10n),
+      l10n.failurePermissionDenied,
+    );
+    expect(
+      message.resolve(const CameraUnavailableFailure(), l10n),
+      l10n.failureCameraUnavailable,
+    );
   });
 }

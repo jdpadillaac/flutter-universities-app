@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
+import 'package:universities_app/features/universities/domain/entities/image_origin.dart';
 
 sealed class UniversityDetailEvent extends Equatable {
   const UniversityDetailEvent();
@@ -27,12 +27,12 @@ final class UniversityStudentsChanged extends UniversityDetailEvent {
 }
 
 final class UniversityImagePickRequested extends UniversityDetailEvent {
-  const UniversityImagePickRequested(this.source);
+  const UniversityImagePickRequested(this.origin);
 
-  final ImagePickSource source;
+  final ImageOrigin origin;
 
   @override
-  List<Object?> get props => [source];
+  List<Object?> get props => [origin];
 }
 
 final class UniversityStudentsSaveRequested extends UniversityDetailEvent {

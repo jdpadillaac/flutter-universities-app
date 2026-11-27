@@ -104,4 +104,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get failureNotFound => 'No se encontró la universidad.';
+
+  @override
+  String get failurePermissionDenied =>
+      'Se denegó el permiso para usar la cámara o la galería.';
+
+  @override
+  String get failureCameraUnavailable =>
+      'La cámara no está disponible en este dispositivo.';
 }

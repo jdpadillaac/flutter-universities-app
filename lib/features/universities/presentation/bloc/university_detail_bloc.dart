@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:oxidized/oxidized.dart';
-import 'package:universities_app/core/media/image_picker_service.dart';
+import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
+import 'package:universities_app/features/universities/domain/usecases/pick_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
@@ -18,7 +19,7 @@ class UniversityDetailBloc
     this._getUniversityExtras,
     this._saveUniversityImage,
     this._saveUniversityStudentCount,
-    this._imagePickerService,
+    this._pickUniversityImage,
   ) : super(const UniversityDetailState()) {
     on<UniversityDetailRequested>(_onDetailRequested);
     on<UniversityStudentsChanged>(_onStudentsChanged);
@@ -31,7 +32,7 @@ class UniversityDetailBloc
   final GetUniversityExtras _getUniversityExtras;
   final SaveUniversityImage _saveUniversityImage;
   final SaveUniversityStudentCount _saveUniversityStudentCount;
-  final ImagePickerService _imagePickerService;
+  final PickUniversityImage _pickUniversityImage;
 
   String? _universityId;
 
@@ -107,28 +108,22 @@ class UniversityDetailBloc
       return;
     }
 
-    final result = await _imagePickerService.pick(event.source);
+    final result = await _pickUniversityImage(event.origin);
 
     switch (result) {
-      case ImagePicked(:final path):
+      case Ok(value: final path):
+        if (path == null) {
+          return;
+        }
         _saveUniversityImage(universityId: universityId, imagePath: path);
         emit(state.copyWith(imagePath: path, clearImageFailedMessage: true));
-      case ImagePickCancelled():
-        break;
-      case ImagePickPermissionDenied():
-        emit(
-          state.copyWith(
-            notice: UniversityDetailNotice.permissionDenied,
-            clearImageFailedMessage: true,
-          ),
-        );
-      case ImagePickFailed(:final message):
-        emit(
-          state.copyWith(
-            notice: UniversityDetailNotice.imageFailed,
-            imageFailedMessage: message,
-          ),
-        );
+      case Err(:final error):
+        final notice = switch (error) {
+          PermissionDeniedFailure() => UniversityDetailNotice.permissionDenied,
+          CameraUnavailableFailure() => UniversityDetailNotice.imageFailed,
+          _ => UniversityDetailNotice.imageFailed,
+        };
+        emit(state.copyWith(notice: notice, clearImageFailedMessage: true));
     }
   }
 

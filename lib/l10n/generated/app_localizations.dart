@@ -285,6 +285,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No se encontró la universidad.'**
   String get failureNotFound;
+
+  /// No description provided for @failurePermissionDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'Se denegó el permiso para usar la cámara o la galería.'**
+  String get failurePermissionDenied;
+
+  /// No description provided for @failureCameraUnavailable.
+  ///
+  /// In es, this message translates to:
+  /// **'La cámara no está disponible en este dispositivo.'**
+  String get failureCameraUnavailable;
 }
 
 class _AppLocalizationsDelegate
