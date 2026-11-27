@@ -95,12 +95,7 @@ class UniversityDetailBloc
     switch (result) {
       case ImagePicked(:final path):
         _saveUniversityImage(universityId: universityId, imagePath: path);
-        emit(
-          state.copyWith(
-            imagePath: path,
-            clearImageFailedMessage: true,
-          ),
-        );
+        emit(state.copyWith(imagePath: path, clearImageFailedMessage: true));
       case ImagePickCancelled():
         break;
       case ImagePickPermissionDenied():
