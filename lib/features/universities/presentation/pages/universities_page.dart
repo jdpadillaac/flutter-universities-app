@@ -8,6 +8,7 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_event.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_state.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/widgets/universities_header.dart';
 import 'package:universities_app/features/universities/presentation/widgets/universities_scroll_view.dart';
@@ -33,15 +34,21 @@ class UniversitiesPage extends StatelessWidget {
       ],
       child: UniversitiesView(
         initialsResolver: getIt<UniversityInitialsResolver>(),
+        failureMessageResolver: getIt<FailureMessageResolver>(),
       ),
     );
   }
 }
 
 class UniversitiesView extends StatelessWidget {
-  const UniversitiesView({required this.initialsResolver, super.key});
+  const UniversitiesView({
+    required this.initialsResolver,
+    required this.failureMessageResolver,
+    super.key,
+  });
 
   final UniversityInitialsResolver initialsResolver;
+  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +87,10 @@ class UniversitiesView extends StatelessWidget {
                       ),
                     UniversitiesFailure(:final items, :final failure)
                         when items.isEmpty =>
-                      UniversitiesFailureState(failure: failure),
+                      UniversitiesFailureState(
+                        failure: failure,
+                        failureMessageResolver: failureMessageResolver,
+                      ),
                     UniversitiesFailure(:final items, :final failure) =>
                       BlocBuilder<
                         UniversityThumbnailsBloc,
@@ -102,7 +112,10 @@ class UniversitiesView extends StatelessWidget {
                                   initialsResolver: initialsResolver,
                                 ),
                               ),
-                              UniversitiesInlineFailureBanner(failure: failure),
+                              UniversitiesInlineFailureBanner(
+                                failure: failure,
+                                failureMessageResolver: failureMessageResolver,
+                              ),
                             ],
                           );
                         },

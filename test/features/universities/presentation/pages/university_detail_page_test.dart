@@ -6,6 +6,7 @@ import 'package:universities_app/features/universities/domain/entities/universit
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/university_detail_page.dart';
 import '../../../../support/localized_material_app.dart';
 
@@ -39,7 +40,9 @@ void main() {
     return LocalizedMaterialApp(
       child: BlocProvider<UniversityDetailBloc>.value(
         value: bloc,
-        child: const UniversityDetailView(),
+        child: const UniversityDetailView(
+          failureMessageResolver: FailureMessageResolver(),
+        ),
       ),
     );
   }

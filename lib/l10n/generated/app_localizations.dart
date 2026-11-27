@@ -226,18 +226,6 @@ abstract class AppLocalizations {
   /// **'Guardado correctamente.'**
   String get savedSuccess;
 
-  /// No description provided for @permissionDenied.
-  ///
-  /// In es, this message translates to:
-  /// **'Se denegó el permiso para usar la cámara o la galería.'**
-  String get permissionDenied;
-
-  /// No description provided for @imagePickFailed.
-  ///
-  /// In es, this message translates to:
-  /// **'No se pudo seleccionar la imagen.'**
-  String get imagePickFailed;
-
   /// No description provided for @studentCountEmpty.
   ///
   /// In es, this message translates to:

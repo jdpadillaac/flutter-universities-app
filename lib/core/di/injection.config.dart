@@ -61,6 +61,8 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
     as _i144;
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart'
     as _i690;
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart'
+    as _i920;
 import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart'
     as _i1019;
 
@@ -80,6 +82,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i265.HtmlEntityDecoder>(() => _i265.HtmlEntityDecoder());
     gh.lazySingleton<_i129.UniversityIdGenerator>(
       () => const _i129.UniversityIdGenerator(),
+    );
+    gh.lazySingleton<_i920.FailureMessageResolver>(
+      () => const _i920.FailureMessageResolver(),
     );
     gh.lazySingleton<_i1019.UniversityInitialsResolver>(
       () => const _i1019.UniversityInitialsResolver(),

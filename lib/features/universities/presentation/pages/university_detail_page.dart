@@ -4,7 +4,7 @@ import 'package:universities_app/core/di/injection.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_event.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_detail_state.dart';
-import 'package:universities_app/features/universities/presentation/l10n/failure_message.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_detail_app_bar.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_detail_content.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_not_found_view.dart';
@@ -21,15 +21,17 @@ class UniversityDetailPage extends StatelessWidget {
       create: (_) =>
           getIt<UniversityDetailBloc>()
             ..add(UniversityDetailRequested(universityId)),
-      child: const UniversityDetailView(),
+      child: UniversityDetailView(
+        failureMessageResolver: getIt<FailureMessageResolver>(),
+      ),
     );
   }
 }
 
 class UniversityDetailView extends StatelessWidget {
-  const UniversityDetailView({super.key});
+  const UniversityDetailView({required this.failureMessageResolver, super.key});
 
-  static const FailureMessage _failureMessage = FailureMessage();
+  final FailureMessageResolver failureMessageResolver;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class UniversityDetailView extends StatelessWidget {
         final message = switch (state.saveStatus) {
           StudentCountSaveStatus.saved => l10n.savedSuccess,
           StudentCountSaveStatus.idle => switch (state.imageFailure) {
-            final failure? => _failureMessage.resolve(failure, l10n),
+            final failure? => failureMessageResolver.resolve(failure, l10n),
             null => null,
           },
         };

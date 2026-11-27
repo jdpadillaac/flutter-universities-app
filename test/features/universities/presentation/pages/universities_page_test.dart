@@ -14,6 +14,7 @@ import 'package:universities_app/features/universities/presentation/bloc/univers
 import 'package:universities_app/features/universities/presentation/bloc/universities_event.dart';
 import 'package:universities_app/features/universities/presentation/bloc/universities_state.dart';
 import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart';
+import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities_page.dart';
 import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/widgets/university_grid_card.dart';
@@ -61,6 +62,7 @@ Widget buildListHarness({
       ],
       child: const UniversitiesView(
         initialsResolver: UniversityInitialsResolver(),
+        failureMessageResolver: FailureMessageResolver(),
       ),
     ),
   );

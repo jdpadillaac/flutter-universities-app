@@ -22,8 +22,6 @@
   "universityNotFound": "No se encontró la universidad.",
   "backToList": "Volver a la lista",
   "savedSuccess": "Guardado correctamente.",
-  "permissionDenied": "Se denegó el permiso para usar la cámara o la galería.",
-  "imagePickFailed": "No se pudo seleccionar la imagen.",
   "studentCountEmpty": "Ingresa un número de estudiantes.",
   "studentCountNotANumber": "El valor debe ser un número entero.",
   "studentCountMustBePositive": "El valor debe ser mayor que cero.",
