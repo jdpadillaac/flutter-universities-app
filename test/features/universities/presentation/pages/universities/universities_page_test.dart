@@ -7,8 +7,8 @@ import 'package:universities_app/core/error/failure.dart';
 import 'package:universities_app/features/universities/domain/entities/universities_slice_entity.dart';
 import 'package:universities_app/features/universities/domain/entities/university.dart';
 import 'package:universities_app/features/universities/domain/services/university_id_generator.dart';
-import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_all_university_extras.dart';
+import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart';
 import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/layout_cubit.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_bloc.dart';
@@ -19,6 +19,7 @@ import 'package:universities_app/features/universities/presentation/pages/univer
 import 'package:universities_app/features/universities/presentation/pages/universities/university_initials_resolver.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/university_grid_card.dart';
 import 'package:universities_app/features/universities/presentation/pages/universities/widgets/university_list_tile.dart';
+
 import '../../../../../support/localized_material_app.dart';
 
 class MockGetUniversitiesPage extends Mock implements GetUniversitiesPage {}

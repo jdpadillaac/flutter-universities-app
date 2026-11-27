@@ -4,9 +4,7 @@ import 'package:universities_app/features/universities/domain/value_objects/stud
 
 void main() {
   test('stores image and student count in memory', () {
-    final repository = UniversityExtrasRepositoryImpl();
-
-    repository
+    final repository = UniversityExtrasRepositoryImpl()
       ..saveImagePath(universityId: 'id-1', imagePath: '/tmp/a.jpg')
       ..saveStudentCount(
         universityId: 'id-1',

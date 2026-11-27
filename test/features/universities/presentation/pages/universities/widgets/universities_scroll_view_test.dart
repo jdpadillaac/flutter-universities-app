@@ -26,8 +26,8 @@ void main() {
       name: 'Test U',
       country: 'Country',
       countryCode: 'CO',
-      domains: ['test.edu'],
-      webPages: ['https://test.edu'],
+      domains: const ['test.edu'],
+      webPages: const ['https://test.edu'],
     );
 
     final repository = UniversityExtrasRepositoryImpl();

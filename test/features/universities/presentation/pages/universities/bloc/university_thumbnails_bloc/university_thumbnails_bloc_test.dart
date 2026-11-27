@@ -45,7 +45,7 @@ void main() {
       bloc.add(const UniversityThumbnailsRequested());
     },
     expect: () => [
-      const UniversityThumbnailsLoaded(imagePaths: {}),
+      const UniversityThumbnailsLoaded(),
       const UniversityThumbnailsLoaded(imagePaths: {'a': '/new.jpg'}),
     ],
   );
