@@ -4,7 +4,7 @@ Tokens en `lib/core/theme/`. `AppTheme` (`@lazySingleton`) expone `light` para M
 
 ## Colores (`AppColors`)
 
-background, surface, border, divider, segmentedBackground, textPrimary, textSecondary, textTertiary, icon, primary, onPrimary, primaryStrong, primaryContainer, primaryBorder, error, disabledBackground, disabledForeground.
+background, surface, border, divider, segmentedBackground, textPrimary, textSecondary, textTertiary, icon, primary, onPrimary, primaryStrong, primaryContainer, primaryBorder, error, disabledBackground, disabledForeground, transparent.
 
 ## Espaciado y radios
 
