@@ -39,6 +39,8 @@ import 'package:universities_app/features/universities/domain/repositories/unive
     as _i814;
 import 'package:universities_app/features/universities/domain/services/university_id_generator.dart'
     as _i129;
+import 'package:universities_app/features/universities/domain/usecases/get_all_university_extras.dart'
+    as _i822;
 import 'package:universities_app/features/universities/domain/usecases/get_universities_page.dart'
     as _i729;
 import 'package:universities_app/features/universities/domain/usecases/get_university_by_id.dart'
@@ -51,20 +53,18 @@ import 'package:universities_app/features/universities/domain/usecases/save_univ
     as _i576;
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart'
     as _i267;
-import 'package:universities_app/features/universities/domain/usecases/watch_university_extras.dart'
-    as _i847;
-import 'package:universities_app/features/universities/presentation/bloc/layout_cubit.dart'
-    as _i299;
-import 'package:universities_app/features/universities/presentation/bloc/universities_bloc.dart'
-    as _i986;
-import 'package:universities_app/features/universities/presentation/bloc/university_detail_bloc.dart'
-    as _i144;
-import 'package:universities_app/features/universities/presentation/bloc/university_thumbnails_bloc.dart'
-    as _i690;
-import 'package:universities_app/features/universities/presentation/l10n/failure_message_resolver.dart'
-    as _i920;
-import 'package:universities_app/features/universities/presentation/services/university_initials_resolver.dart'
-    as _i1019;
+import 'package:universities_app/features/universities/presentation/helpers/failure_message_resolver.dart'
+    as _i713;
+import 'package:universities_app/features/universities/presentation/pages/universities/bloc/layout_cubit/layout_cubit.dart'
+    as _i221;
+import 'package:universities_app/features/universities/presentation/pages/universities/bloc/universities_bloc/universities_bloc.dart'
+    as _i717;
+import 'package:universities_app/features/universities/presentation/pages/universities/bloc/university_thumbnails_bloc/university_thumbnails_bloc.dart'
+    as _i737;
+import 'package:universities_app/features/universities/presentation/pages/universities/university_initials_resolver.dart'
+    as _i330;
+import 'package:universities_app/features/universities/presentation/pages/university_detail/bloc/university_detail_bloc/university_detail_bloc.dart'
+    as _i781;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -74,7 +74,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
-    gh.factory<_i299.LayoutCubit>(() => _i299.LayoutCubit());
+    gh.factory<_i221.LayoutCubit>(() => _i221.LayoutCubit());
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i583.GoRouter>(() => registerModule.goRouter);
     gh.lazySingleton<_i183.ImagePicker>(() => registerModule.imagePicker);
@@ -83,11 +83,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i129.UniversityIdGenerator>(
       () => const _i129.UniversityIdGenerator(),
     );
-    gh.lazySingleton<_i920.FailureMessageResolver>(
-      () => const _i920.FailureMessageResolver(),
+    gh.lazySingleton<_i713.FailureMessageResolver>(
+      () => const _i713.FailureMessageResolver(),
     );
-    gh.lazySingleton<_i1019.UniversityInitialsResolver>(
-      () => const _i1019.UniversityInitialsResolver(),
+    gh.lazySingleton<_i330.UniversityInitialsResolver>(
+      () => const _i330.UniversityInitialsResolver(),
     );
     gh.lazySingleton<_i814.UniversityExtrasRepository>(
       () => _i759.UniversityExtrasRepositoryImpl(),
@@ -105,6 +105,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i886.PickUniversityImage>(
       () => _i886.PickUniversityImage(gh<_i202.ImagePickerRepository>()),
     );
+    gh.factory<_i822.GetAllUniversityExtras>(
+      () =>
+          _i822.GetAllUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
+    );
     gh.factory<_i31.GetUniversityExtras>(
       () => _i31.GetUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
     );
@@ -116,14 +120,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i814.UniversityExtrasRepository>(),
       ),
     );
-    gh.factory<_i847.WatchUniversityExtras>(
-      () => _i847.WatchUniversityExtras(gh<_i814.UniversityExtrasRepository>()),
-    );
     gh.lazySingleton<_i127.UniversitiesJsonParser>(
       () => _i127.UniversitiesJsonParser(gh<_i297.UniversityDtoMapper>()),
     );
-    gh.factory<_i690.UniversityThumbnailsBloc>(
-      () => _i690.UniversityThumbnailsBloc(gh<_i847.WatchUniversityExtras>()),
+    gh.factory<_i737.UniversityThumbnailsBloc>(
+      () => _i737.UniversityThumbnailsBloc(gh<_i822.GetAllUniversityExtras>()),
     );
     gh.factory<_i379.UniversitiesRemoteDataSource>(
       () => _i379.UniversitiesRemoteDataSourceImpl(
@@ -142,11 +143,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i172.GetUniversityById>(
       () => _i172.GetUniversityById(gh<_i874.UniversitiesRepository>()),
     );
-    gh.factory<_i986.UniversitiesBloc>(
-      () => _i986.UniversitiesBloc(gh<_i729.GetUniversitiesPage>()),
+    gh.factory<_i717.UniversitiesBloc>(
+      () => _i717.UniversitiesBloc(gh<_i729.GetUniversitiesPage>()),
     );
-    gh.factory<_i144.UniversityDetailBloc>(
-      () => _i144.UniversityDetailBloc(
+    gh.factory<_i781.UniversityDetailBloc>(
+      () => _i781.UniversityDetailBloc(
         gh<_i172.GetUniversityById>(),
         gh<_i31.GetUniversityExtras>(),
         gh<_i576.SaveUniversityImage>(),

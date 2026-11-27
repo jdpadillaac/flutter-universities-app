@@ -12,3 +12,23 @@ La app está organizada por feature en `domain`, `data` y `presentation`. `lib/c
 - Los DTOs no salen de `data`. El mapeo a entidad vive en `UniversityDtoMapper`.
 - Presentación: `UniversitiesPage`, `UniversityDetailPage`, widgets de ítem y blocs/cubit asociados. No añadas pantallas que el código no tenga.
 - La entidad de paginación en dominio es `UniversitiesSliceEntity`, distinta del widget `UniversitiesPage`.
+
+`features/universities/presentation/` se organiza por page:
+
+```
+presentation/
+  pages/
+    universities/
+      universities_page.dart
+      bloc/<bloc_o_cubit>/
+      widgets/
+    university_detail/
+      university_detail_page.dart
+      bloc/<bloc_o_cubit>/
+      widgets/
+  helpers/
+  blocs/
+  widgets/
+```
+
+Un widget, bloc, cubit o helper de presentación que usa una sola page vive dentro de esa page. Si lo usan dos o más pages, va a `presentation/widgets`, `presentation/blocs` o `presentation/helpers`. Se decide por los imports reales.

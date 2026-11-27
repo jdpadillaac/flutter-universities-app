@@ -2,10 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:universities_app/features/universities/domain/entities/university_extras.dart';
 import 'package:universities_app/features/universities/domain/repositories/university_extras_repository.dart';
+import 'package:universities_app/features/universities/domain/usecases/get_all_university_extras.dart';
 import 'package:universities_app/features/universities/domain/usecases/get_university_extras.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_image.dart';
 import 'package:universities_app/features/universities/domain/usecases/save_university_student_count.dart';
-import 'package:universities_app/features/universities/domain/usecases/watch_university_extras.dart';
 import 'package:universities_app/features/universities/domain/value_objects/student_count.dart';
 
 class MockUniversityExtrasRepository extends Mock
@@ -18,12 +18,16 @@ void main() {
     repository = MockUniversityExtrasRepository();
   });
 
-  test('WatchUniversityExtras returns the repository stream', () {
-    when(repository.watch).thenAnswer((_) => const Stream.empty());
-    final useCase = WatchUniversityExtras(repository);
+  test('GetAllUniversityExtras delegates to the repository', () {
+    when(
+      () => repository.all,
+    ).thenReturn(const {'id': UniversityExtras(imagePath: '/tmp/a.jpg')});
+    final useCase = GetAllUniversityExtras(repository);
 
-    expect(useCase(), isA<Stream<Map<String, UniversityExtras>>>());
-    verify(repository.watch).called(1);
+    final result = useCase();
+
+    expect(result['id']?.imagePath, '/tmp/a.jpg');
+    verify(() => repository.all).called(1);
   });
 
   test('GetUniversityExtras delegates to the repository', () {
