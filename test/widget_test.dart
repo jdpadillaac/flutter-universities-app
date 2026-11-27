@@ -16,4 +16,14 @@ void main() {
 
     expect(find.text(UniversitiesListPage.title), findsOneWidget);
   });
+
+  testWidgets('opens the sample university detail', (tester) async {
+    await tester.pumpWidget(const UniversitiesApp());
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Open sample detail'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('University id: sample'), findsOneWidget);
+  });
 }
