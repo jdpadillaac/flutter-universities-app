@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Arts &amp; Science College",
+    "country": "United States",
+    "alpha_two_code": "US",
+    "domains": ["arts.edu"],
+    "web_pages": ["http://arts.edu"],
+    "state-province": null
+  },
+  {
+    "name": "State College",
+    "country": "Canada",
+    "alpha_two_code": "CA",
+    "domains": ["state.edu"],
+    "web_pages": ["http://state.edu"],
+    "state-province": "Ontario"
+  },
+  {
+    "name": "Multi Domain University",
+    "country": "United Kingdom",
+    "alpha_two_code": "GB",
+    "domains": ["multi.edu", "multi.ac.uk"],
+    "web_pages": ["http://multi.edu", "https://multi.ac.uk"],
+    "state-province": null
+  }
+]
